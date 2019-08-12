@@ -4,14 +4,13 @@ import io.pinect.azeron.server.domain.dto.SubscriptionControlDto;
 import io.pinect.azeron.server.service.tracker.ClientTracker;
 import lombok.extern.log4j.Log4j2;
 import nats.client.Message;
-import nats.client.MessageHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 @Component
 @Log4j2
-public class SubscribeMessageHandler implements MessageHandler {
+public class SubscribeMessageHandler extends AbstractMessageHandler {
     private final ClientTracker clientTracker;
     private final Converter<String, SubscriptionControlDto> toSubscriptionControlConverter;
 
@@ -23,6 +22,8 @@ public class SubscribeMessageHandler implements MessageHandler {
 
     @Override
     public void onMessage(Message message) {
+        super.onMessage(message);
+
         try {
             SubscriptionControlDto subscriptionControlDto = toSubscriptionControlConverter.convert(message.getBody());
             assert subscriptionControlDto != null;

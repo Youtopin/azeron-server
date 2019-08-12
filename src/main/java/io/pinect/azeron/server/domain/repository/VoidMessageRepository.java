@@ -13,26 +13,30 @@ public class VoidMessageRepository implements MessageRepository {
 
     @Override
     public void addMessage(MessageEntity messageEntity) {
-
+        log.trace("Added new message to repository -> "+ messageEntity);
     }
 
     @Override
     public MessageEntity seenMessage(String messageId, String serviceName) {
+        log.trace("Added seem to message in repository -> messageId: "+ messageId + ", serviceName: "+ serviceName);
         return new MessageEntity();
     }
 
     @Override
-    public MessageEntity seenMessages(List<String> messageId, String serviceName) {
+    public MessageEntity seenMessages(List<String> messageIds, String serviceName) {
+        log.trace("Added seem to message in repository -> messageIds: "+ messageIds+ ", serviceNames: "+ serviceName);
         return new MessageEntity();
     }
 
     @Override
     public MessageEntity removeMessage(String messageId) {
+        log.trace("Removing message from repository -> messageId: "+ messageId);
         return new MessageEntity();
     }
 
     @Override
     public MessageResult getUnseenMessagesOfService(String serviceName) {
+        log.trace("Getting unseen messages from repository -> serviceName: "+ serviceName);
         return new MessageResult();
     }
 }

@@ -9,7 +9,6 @@ import io.pinect.azeron.server.domain.model.AzeronServerInfo;
 import io.pinect.azeron.server.domain.model.ClientConfig;
 import io.pinect.azeron.server.service.tracker.ClientTracker;
 import nats.client.Message;
-import nats.client.MessageHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +24,7 @@ import java.util.concurrent.TimeUnit;
  * Message handler to handle requests to fetch services map between all azeron servers
  */
 @Component
-public class AzeronNetworkMessageMessageHandler implements MessageHandler {
+public class AzeronNetworkMessageMessageHandler extends AbstractMessageHandler {
     private final ClientTracker clientTracker;
     private final AzeronServerInfo azeronServerInfo;
     private final ObjectMapper objectMapper;
@@ -41,25 +40,26 @@ public class AzeronNetworkMessageMessageHandler implements MessageHandler {
 
     @Override
     public void onMessage(Message message) {
-            String body = message.getBody();
-            try {
-                AzeronNetworkMessageDto azeronNetworkMessageDto = objectMapper.readValue(body, AzeronNetworkMessageDto.class);
-                String reponse = null;
+        super.onMessage(message);
+        String body = message.getBody();
+        try {
+            AzeronNetworkMessageDto azeronNetworkMessageDto = objectMapper.readValue(body, AzeronNetworkMessageDto.class);
+            String reponse = null;
 
-                switch (azeronNetworkMessageDto.getType()){
-                    case FETCH_REQUEST:
-                        AzeronFetchRequestDto azeronFetchRequestDto = objectMapper.readValue(body, AzeronFetchRequestDto.class);
-                        if(azeronFetchRequestDto.getServerUUID().equals(azeronServerInfo.getId()))
-                            return;
-                        reponse = getJsonFromChannelsMap();
-                        break;
-                }
-
-                if(message.isRequest())
-                    message.reply(reponse, 5, TimeUnit.SECONDS);
-            } catch (IOException e) {
-                logger.error("could not read value of json: "+ message.getBody() , e);
+            switch (azeronNetworkMessageDto.getType()){
+                case FETCH_REQUEST:
+                    AzeronFetchRequestDto azeronFetchRequestDto = objectMapper.readValue(body, AzeronFetchRequestDto.class);
+                    if(azeronFetchRequestDto.getServerUUID().equals(azeronServerInfo.getId()))
+                        return;
+                    reponse = getJsonFromChannelsMap();
+                    break;
             }
+
+            if(message.isRequest())
+                message.reply(reponse, 5, TimeUnit.SECONDS);
+        } catch (IOException e) {
+            logger.error("could not read value of json: "+ message.getBody() , e);
+        }
     }
 
     private String getJsonFromChannelsMap() throws JsonProcessingException {

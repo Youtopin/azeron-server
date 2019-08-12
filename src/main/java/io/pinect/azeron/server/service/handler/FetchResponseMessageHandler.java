@@ -6,7 +6,6 @@ import io.pinect.azeron.server.domain.model.ClientConfig;
 import io.pinect.azeron.server.service.tracker.ClientTracker;
 import lombok.extern.log4j.Log4j2;
 import nats.client.Message;
-import nats.client.MessageHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +13,7 @@ import java.io.IOException;
 
 @Component
 @Log4j2
-public class FetchResponseMessageHandler implements MessageHandler {
+public class FetchResponseMessageHandler extends AbstractMessageHandler {
     private final ClientTracker clientTracker;
     private final ObjectMapper objectMapper;
 
@@ -26,6 +25,8 @@ public class FetchResponseMessageHandler implements MessageHandler {
 
     @Override
     public void onMessage(Message message) {
+        super.onMessage(message);
+
         String body = message.getBody();
         try {
             AzeronChannelListDto azeronChannelListDto = objectMapper.readValue(body, AzeronChannelListDto.class);

@@ -6,6 +6,7 @@ import io.pinect.azeron.server.config.ChannelName;
 import io.pinect.azeron.server.domain.dto.AzeronFetchRequestDto;
 import io.pinect.azeron.server.domain.model.AzeronServerInfo;
 import io.pinect.azeron.server.service.handler.FetchResponseMessageHandler;
+import lombok.extern.log4j.Log4j2;
 import nats.client.Nats;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 import java.util.concurrent.TimeUnit;
 
 @Component
+@Log4j2
 public class AzeronFetchMessagePublisher {
     private final AzeronServerInfo azeronServerInfo;
     private final FetchResponseMessageHandler fetchResponseMessageHandler;
@@ -26,6 +28,8 @@ public class AzeronFetchMessagePublisher {
     }
 
     public void publishFetchMessage(Nats nats){
+        log.trace("Publishing nats fetch message");
+
         AzeronFetchRequestDto azeronFetchRequestDto = new AzeronFetchRequestDto(azeronServerInfo.getId());
         String json = null;
         try {

@@ -1,6 +1,7 @@
 package io.pinect.azeron.server.service.tracker;
 
 import io.pinect.azeron.server.domain.model.ClientConfig;
+import lombok.extern.log4j.Log4j2;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,6 +10,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+@Log4j2
 public class InMemoryClientTracker implements ClientTracker {
     private final List<ClientStateListener> clientStateListeners = new CopyOnWriteArrayList<>();
     private final Map<String, List<ClientConfig>> channelToClientConfigsMap = new ConcurrentHashMap<>();
@@ -29,6 +31,7 @@ public class InMemoryClientTracker implements ClientTracker {
             channelNames.add(channelName);
 
         if(added){
+            log.trace("Added new client to tracker -> "+ clientConfig);
             clientStateListeners.forEach(clientStateListener -> {
                 clientStateListener.onCreate(this, channelName, clientConfig);
             });
@@ -39,6 +42,8 @@ public class InMemoryClientTracker implements ClientTracker {
 
     @Override
     public void removeClient(String serviceName) {
+        log.trace("Removing client from tracker. service name -> "+ serviceName);
+
         List<String> channelNames = serviceToChannelsMap.remove(serviceName);
         channelNames.forEach(channelToClientConfigsMap::remove);
 
@@ -49,6 +54,8 @@ public class InMemoryClientTracker implements ClientTracker {
 
     @Override
     public synchronized void removeClient(String serviceName, String channelName) {
+        log.trace("Removing client from tracker. service name -> "+ serviceName + " , channel name -> "+ channelName);
+
         if(channelName == null){
             removeClient(serviceName);
             return;

@@ -6,7 +6,6 @@ import io.pinect.azeron.server.domain.repository.MessageRepository;
 import io.pinect.azeron.server.service.tracker.ClientTracker;
 import lombok.extern.log4j.Log4j2;
 import nats.client.Message;
-import nats.client.MessageHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
@@ -16,7 +15,7 @@ import java.util.List;
 
 @Log4j2
 @Component
-public class AzeronMessageHandler implements MessageHandler {
+public class AzeronMessageHandler extends AbstractMessageHandler {
     private final ClientTracker clientTracker;
     private final MessageRepository messageRepository;
     private final Converter<String, MessageDto> toMessageConverter;
@@ -32,6 +31,7 @@ public class AzeronMessageHandler implements MessageHandler {
 
     @Override
     public void onMessage(Message message) {
+        super.onMessage(message);
         MessageDto messageDto = toMessageConverter.convert(message.getBody());
         assert messageDto != null;
         validateMessage(message, messageDto);
