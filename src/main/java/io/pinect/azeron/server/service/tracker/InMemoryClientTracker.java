@@ -30,7 +30,7 @@ public class InMemoryClientTracker implements ClientTracker {
 
         if(added){
             clientStateListeners.forEach(clientStateListener -> {
-                clientStateListener.onCreate(channelName, clientConfig);
+                clientStateListener.onCreate(this, channelName, clientConfig);
             });
         }
 
@@ -43,7 +43,7 @@ public class InMemoryClientTracker implements ClientTracker {
         channelNames.forEach(channelToClientConfigsMap::remove);
 
         clientStateListeners.forEach(clientStateListener -> {
-            clientStateListener.onDelete(serviceName, channelNames);
+            clientStateListener.onDelete(this, serviceName, channelNames);
         });
     }
 
@@ -74,7 +74,7 @@ public class InMemoryClientTracker implements ClientTracker {
         }
 
         clientStateListeners.forEach(clientStateListener -> {
-            clientStateListener.onDelete(serviceName, channelName);
+            clientStateListener.onDelete(this, serviceName, channelName);
         });
     }
 

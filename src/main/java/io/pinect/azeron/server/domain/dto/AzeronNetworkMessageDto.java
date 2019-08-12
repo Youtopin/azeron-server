@@ -7,7 +7,14 @@ import lombok.Setter;
 @Setter
 public class AzeronNetworkMessageDto {
     private String serverUUID;
+    private String clientUUID;
     private MessageType type;
+
+    public AzeronNetworkMessageDto(String serverUUID, String clientUUID, MessageType type) {
+        this.serverUUID = serverUUID;
+        this.clientUUID = clientUUID;
+        this.type = type;
+    }
 
     public AzeronNetworkMessageDto(String serverUUID, MessageType type) {
         this.serverUUID = serverUUID;
@@ -19,6 +26,6 @@ public class AzeronNetworkMessageDto {
     }
 
     public enum MessageType {
-        FETCH_REQUEST, FETCH_RESPONSE
+        FETCH_REQUEST, FETCH_RESPONSE, PING
     }
 }

@@ -7,6 +7,9 @@ import io.pinect.azeron.server.domain.model.AzeronServerInfo;
 import io.pinect.azeron.server.domain.repository.MessageRepository;
 import io.pinect.azeron.server.domain.repository.VoidMessageRepository;
 import io.pinect.azeron.server.service.stateListener.NatsConnectionStateListener;
+import io.pinect.azeron.server.service.tracker.ClientStateListenerService;
+import io.pinect.azeron.server.service.tracker.ClientTracker;
+import io.pinect.azeron.server.service.tracker.InMemoryClientTracker;
 import nats.client.Nats;
 import nats.client.NatsConnector;
 import nats.client.spring.ApplicationEventPublishingConnectionStateListener;
@@ -30,12 +33,14 @@ public class AzeronServerConfiguration {
     private final AzeronServerNatsProperties azeronServerNatsProperties;
     private final ApplicationContext applicationContext;
     private final NatsConnectionStateListener natsConnectionStateListener;
+    private final ClientStateListenerService clientStateListenerService;
 
     @Autowired
-    public AzeronServerConfiguration(AzeronServerNatsProperties azeronServerNatsProperties, ApplicationContext applicationContext, NatsConnectionStateListener natsConnectionStateListener) {
+    public AzeronServerConfiguration(AzeronServerNatsProperties azeronServerNatsProperties, ApplicationContext applicationContext, NatsConnectionStateListener natsConnectionStateListener, ClientStateListenerService clientStateListenerService) {
         this.azeronServerNatsProperties = azeronServerNatsProperties;
         this.applicationContext = applicationContext;
         this.natsConnectionStateListener = natsConnectionStateListener;
+        this.clientStateListenerService = clientStateListenerService;
     }
 
     @Bean
@@ -62,6 +67,13 @@ public class AzeronServerConfiguration {
     @Bean
     public AzeronServerInfo azeronServerInfo(){
         return new AzeronServerInfo(UUID.randomUUID().toString(), 1);
+    }
+
+    @Bean
+    public ClientTracker clientTracker(){
+        InMemoryClientTracker inMemoryClientTracker = new InMemoryClientTracker();
+        inMemoryClientTracker.addListener(clientStateListenerService);
+        return inMemoryClientTracker;
     }
 
 }

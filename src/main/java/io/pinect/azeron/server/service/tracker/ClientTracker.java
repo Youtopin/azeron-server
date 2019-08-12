@@ -17,8 +17,8 @@ public interface ClientTracker {
     Map<String, List<ClientConfig>> getChannelToClientConfigsMap();
 
     interface ClientStateListener {
-        void onCreate(String channelName, ClientConfig clientConfig);
-        void onDelete(String serviceName, String channelName);
-        void onDelete(String serviceName, List<String> channelNames);
+        void onCreate(ClientTracker clientTracker, String channelName, ClientConfig clientConfig);
+        void onDelete(ClientTracker clientTracker, String serviceName, String channelName);
+        void onDelete(ClientTracker clientTracker, String serviceName, List<String> channelNames);
     }
 }

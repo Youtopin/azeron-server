@@ -7,6 +7,7 @@ import io.pinect.azeron.server.service.tracker.ClientTracker;
 import lombok.extern.log4j.Log4j2;
 import nats.client.Message;
 import nats.client.MessageHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -17,6 +18,7 @@ public class FetchResponseMessageHandler implements MessageHandler {
     private final ClientTracker clientTracker;
     private final ObjectMapper objectMapper;
 
+    @Autowired
     public FetchResponseMessageHandler(ClientTracker clientTracker, ObjectMapper objectMapper) {
         this.clientTracker = clientTracker;
         this.objectMapper = objectMapper;
