@@ -52,6 +52,7 @@ public class AzeronMessagingInitializerService implements MessagingInitializerSe
         fetchNetworkSubscription();
         fetchSubscriptions();
         fetchInfoSync();
+        fetchChannelSync();
     }
 
     public synchronized void setNats(Nats nats) {
@@ -76,12 +77,25 @@ public class AzeronMessagingInitializerService implements MessagingInitializerSe
         if(this.schedule != null)
             schedule.cancel(true);
         PeriodicTrigger periodicTrigger = new PeriodicTrigger(azeronServerProperties.getInfoSyncIntervalSeconds(), TimeUnit.SECONDS);
-        periodicTrigger.setInitialDelay(azeronServerProperties.getChannelSyncIntervalSeconds() * 1000);
+        periodicTrigger.setInitialDelay(azeronServerProperties.getInfoSyncIntervalSeconds() * 1000);
         this.schedule = azeronTaskScheduler.schedule(new Runnable() {
             @Override
             public void run() {
                 azeronInfoMessagePublisher.publishInfoMessage(nats);
             }
         }, periodicTrigger);
+    }
+
+    private void fetchChannelSync(){
+        if(azeronServerProperties.isShouldSyncChannels()){
+            PeriodicTrigger periodicTrigger = new PeriodicTrigger(azeronServerProperties.getChannelSyncIntervalSeconds(), TimeUnit.SECONDS);
+            periodicTrigger.setInitialDelay(azeronServerProperties.getChannelSyncIntervalSeconds() * 1000);
+            this.schedule = azeronTaskScheduler.schedule(new Runnable() {
+                @Override
+                public void run() {
+                    azeronFetchMessagePublisher.publishFetchMessage(nats);
+                }
+            }, periodicTrigger);
+        }
     }
 }
