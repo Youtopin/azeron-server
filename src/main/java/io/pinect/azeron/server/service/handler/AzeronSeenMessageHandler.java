@@ -31,7 +31,8 @@ public class AzeronSeenMessageHandler implements MessageHandler {
         SeenDto seenDto = getSeenDto(message.getBody());
         SeenResponseDto seenResponseDto = seenService.seen(seenDto);
         try {
-            message.reply(objectMapper.writeValueAsString(seenResponseDto), 10, TimeUnit.SECONDS);
+            if(message.isRequest())
+                message.reply(objectMapper.writeValueAsString(seenResponseDto), 10, TimeUnit.SECONDS);
         } catch (JsonProcessingException e) {
             log.error(e);
         }

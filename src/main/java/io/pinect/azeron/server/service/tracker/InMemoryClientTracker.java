@@ -119,4 +119,14 @@ public class InMemoryClientTracker implements ClientTracker {
     public Map<String, List<ClientConfig>> getChannelToClientConfigsMap() {
         return channelToClientConfigsMap;
     }
+
+    @Override
+    public void flush() {
+        channelToClientConfigsMap.forEach((s, clientConfigs) -> {
+            channelToClientConfigsMap.remove(s);
+        });
+        serviceToChannelsMap.forEach(((s, strings) -> {
+            serviceToChannelsMap.remove(s);
+        }));
+    }
 }

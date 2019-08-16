@@ -2,6 +2,7 @@ package io.pinect.azeron.server.config;
 
 import io.pinect.azeron.server.AtomicNatsHolder;
 import io.pinect.azeron.server.config.properties.AzeronServerNatsProperties;
+import io.pinect.azeron.server.config.properties.AzeronServerProperties;
 import io.pinect.azeron.server.domain.model.AzeronServerInfo;
 import io.pinect.azeron.server.domain.repository.MessageRepository;
 import io.pinect.azeron.server.domain.repository.VoidMessageRepository;
@@ -20,14 +21,17 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 import java.util.UUID;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
 @EnableAutoConfiguration
 @ComponentScan("io.pinect.azeron.server")
-@EnableConfigurationProperties({AzeronServerNatsProperties.class})
+@EnableConfigurationProperties({AzeronServerNatsProperties.class, AzeronServerProperties.class})
 public class AzeronServerConfiguration {
     private final AzeronServerNatsProperties azeronServerNatsProperties;
     private final ApplicationContext applicationContext;
@@ -73,6 +77,19 @@ public class AzeronServerConfiguration {
         InMemoryClientTracker inMemoryClientTracker = new InMemoryClientTracker();
         inMemoryClientTracker.addListener(clientStateListenerService);
         return inMemoryClientTracker;
+    }
+
+    @Bean("azeronTaskScheduler")
+    public TaskScheduler azeronTaskScheduler() {
+        ThreadPoolTaskScheduler threadPoolTaskScheduler = new ThreadPoolTaskScheduler();
+        threadPoolTaskScheduler.setPoolSize(20);
+        threadPoolTaskScheduler.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+        threadPoolTaskScheduler.setRemoveOnCancelPolicy(false);
+        threadPoolTaskScheduler.setThreadGroupName("azeron-client-tasks");
+        threadPoolTaskScheduler.setThreadPriority(Thread.MAX_PRIORITY);
+        threadPoolTaskScheduler.setBeanName("azeronTaskScheduler");
+        threadPoolTaskScheduler.initialize();
+        return threadPoolTaskScheduler;
     }
 
 }

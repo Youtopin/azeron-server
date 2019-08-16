@@ -1,11 +1,13 @@
 package io.pinect.azeron.server.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.pinect.azeron.server.domain.model.ClientConfig;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Getter
 @Setter
 public class AzeronChannelListDto extends AzeronNetworkMessageDto {

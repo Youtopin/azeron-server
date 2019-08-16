@@ -1,14 +1,19 @@
 package io.pinect.azeron.server.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Getter
 @Setter
 public class AzeronNetworkMessageDto {
     private String serverUUID;
     private String clientUUID;
     private MessageType type;
+
+    public AzeronNetworkMessageDto() {
+    }
 
     public AzeronNetworkMessageDto(String serverUUID, String clientUUID, MessageType type) {
         this.serverUUID = serverUUID;
@@ -26,6 +31,6 @@ public class AzeronNetworkMessageDto {
     }
 
     public enum MessageType {
-        FETCH_REQUEST, FETCH_RESPONSE, PING
+        FETCH_REQUEST, FETCH_RESPONSE, PING, INFO
     }
 }

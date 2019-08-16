@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.pinect.azeron.server.domain.dto.AzeronChannelListDto;
 import io.pinect.azeron.server.domain.dto.AzeronFetchRequestDto;
 import io.pinect.azeron.server.domain.dto.AzeronNetworkMessageDto;
+import io.pinect.azeron.server.domain.dto.InfoPublishDto;
 import io.pinect.azeron.server.service.FetchService;
+import io.pinect.azeron.server.service.InfoService;
 import nats.client.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,13 +23,15 @@ import java.util.concurrent.TimeUnit;
 public class AzeronNetworkMessageMessageHandler extends AbstractMessageHandler {
     private final ObjectMapper objectMapper;
     private final FetchService fetchService;
+    private final InfoService infoService;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     @Autowired
-    public AzeronNetworkMessageMessageHandler(ObjectMapper objectMapper, FetchService fetchService) {
+    public AzeronNetworkMessageMessageHandler(ObjectMapper objectMapper, FetchService fetchService, InfoService infoService) {
         this.objectMapper = objectMapper;
         this.fetchService = fetchService;
+        this.infoService = infoService;
     }
 
     @Override
@@ -44,6 +48,10 @@ public class AzeronNetworkMessageMessageHandler extends AbstractMessageHandler {
                     AzeronChannelListDto azeronChannelListDto = fetchService.fetch(azeronFetchRequestDto);
                     if(azeronChannelListDto != null)
                         reponse = objectMapper.writeValueAsString(azeronChannelListDto);
+                    break;
+                case INFO:
+                    InfoPublishDto infoPublishDto = objectMapper.readValue(body, InfoPublishDto.class);
+                    infoService.addInfo(infoPublishDto);
                     break;
             }
 

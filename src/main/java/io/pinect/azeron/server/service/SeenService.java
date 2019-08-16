@@ -1,6 +1,5 @@
 package io.pinect.azeron.server.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.pinect.azeron.server.domain.dto.SeenDto;
 import io.pinect.azeron.server.domain.dto.SeenResponseDto;
 import io.pinect.azeron.server.domain.entity.MessageEntity;
@@ -13,14 +12,13 @@ import org.springframework.stereotype.Service;
 @Log4j2
 public class SeenService {
     private final MessageRepository messageRepository;
-    private final ObjectMapper objectMapper;
 
-    public SeenService(MessageRepository messageRepository, ObjectMapper objectMapper) {
+    public SeenService(MessageRepository messageRepository) {
         this.messageRepository = messageRepository;
-        this.objectMapper = objectMapper;
     }
 
     public SeenResponseDto seen(SeenDto seenDto){
+        log.info("Seen received -> "+ seenDto.toString());
         if(seenDto.getMessageId() != null) {
             MessageEntity messageEntity = messageRepository.seenMessage(seenDto.getMessageId(), seenDto.getServiceName());
             removeMessageIdNeeded(messageEntity);

@@ -15,6 +15,7 @@ public interface ClientTracker {
     void addListener(ClientStateListener clientStateListener);
     void removeListener(ClientStateListener clientStateListener);
     Map<String, List<ClientConfig>> getChannelToClientConfigsMap();
+    void flush();
 
     interface ClientStateListener {
         void onCreate(ClientTracker clientTracker, String channelName, ClientConfig clientConfig);

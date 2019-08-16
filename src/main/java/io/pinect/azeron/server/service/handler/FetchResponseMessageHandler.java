@@ -30,6 +30,7 @@ public class FetchResponseMessageHandler extends AbstractMessageHandler {
         String body = message.getBody();
         try {
             AzeronChannelListDto azeronChannelListDto = objectMapper.readValue(body, AzeronChannelListDto.class);
+            clientTracker.flush();
             for(AzeronChannelListDto.Channel channel: azeronChannelListDto.getChannels()){
                 for(ClientConfig clientConfig: channel.getConfigs()){
                     clientTracker.addClient(channel.getName(), clientConfig);
