@@ -12,7 +12,7 @@ public interface MessageRepository {
     MessageEntity seenMessage(String messageId, String serviceName);
     void seenMessages(List<String> messageId, String serviceName);
     MessageEntity removeMessage(String messageId);
-    MessageResult getUnseenMessagesOfService(String serviceName);
+    MessageResult getUnseenMessagesOfService(String serviceName, int offset, int limit);
 
     @Getter
     @Setter

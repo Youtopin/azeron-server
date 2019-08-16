@@ -34,7 +34,7 @@ public class VoidMessageRepository implements MessageRepository {
     }
 
     @Override
-    public MessageResult getUnseenMessagesOfService(String serviceName) {
+    public MessageResult getUnseenMessagesOfService(String serviceName, int offset, int limit) {
         log.trace("Getting unseen messages from repository -> serviceName: "+ serviceName);
         return new MessageResult();
     }

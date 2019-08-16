@@ -14,4 +14,6 @@ public class AzeronServerProperties {
     private boolean shouldSyncChannels = false;
     private int channelSyncIntervalSeconds = 60 * 10;
     private int infoSyncIntervalSeconds = 60 * 5;
+    private int unseenQueryLimit = 10;
+    private String queueName = "azeron-server";
 }
