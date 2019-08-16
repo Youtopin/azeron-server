@@ -8,12 +8,12 @@ import org.springframework.stereotype.Service;
 
 @Service("natsConnectionStateListener")
 @Log4j2
-public class AzeronConnecionStateListener implements NatsConnectionStateListener{
+public class AzeronNatsConnecionStateListener implements NatsConnectionStateListener{
     private final MessagingInitializerService messagingInitializerService;
     private State state;
 
     @Autowired
-    public AzeronConnecionStateListener(MessagingInitializerService messagingInitializerService) {
+    public AzeronNatsConnecionStateListener(MessagingInitializerService messagingInitializerService) {
         this.messagingInitializerService = messagingInitializerService;
     }
 
@@ -24,7 +24,7 @@ public class AzeronConnecionStateListener implements NatsConnectionStateListener
 
     @Override
     public void onConnectionStateChange(Nats nats, State state) {
-        log.trace("Nats client state changed to "+ state.name());
+        log.info("Nats state changed from "+ this.state + " to "+ state);
 
         switch (state){
             case CONNECTED:

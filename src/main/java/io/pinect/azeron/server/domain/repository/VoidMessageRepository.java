@@ -23,9 +23,8 @@ public class VoidMessageRepository implements MessageRepository {
     }
 
     @Override
-    public MessageEntity seenMessages(List<String> messageIds, String serviceName) {
+    public void seenMessages(List<String> messageIds, String serviceName) {
         log.trace("Added seem to message in repository -> messageIds: "+ messageIds+ ", serviceNames: "+ serviceName);
-        return new MessageEntity();
     }
 
     @Override

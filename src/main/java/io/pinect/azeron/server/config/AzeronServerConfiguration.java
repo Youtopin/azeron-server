@@ -2,7 +2,6 @@ package io.pinect.azeron.server.config;
 
 import io.pinect.azeron.server.AtomicNatsHolder;
 import io.pinect.azeron.server.config.properties.AzeronServerNatsProperties;
-import io.pinect.azeron.server.config.properties.AzeronServerProperties;
 import io.pinect.azeron.server.domain.model.AzeronServerInfo;
 import io.pinect.azeron.server.domain.repository.MessageRepository;
 import io.pinect.azeron.server.domain.repository.VoidMessageRepository;
@@ -28,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 @EnableAutoConfiguration
 @ComponentScan("io.pinect.azeron.server")
-@EnableConfigurationProperties({AzeronServerNatsProperties.class, AzeronServerProperties.class})
+@EnableConfigurationProperties({AzeronServerNatsProperties.class})
 public class AzeronServerConfiguration {
     private final AzeronServerNatsProperties azeronServerNatsProperties;
     private final ApplicationContext applicationContext;

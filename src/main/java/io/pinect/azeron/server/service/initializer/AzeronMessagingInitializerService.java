@@ -1,6 +1,7 @@
 package io.pinect.azeron.server.service.initializer;
 
 import io.pinect.azeron.server.service.handler.AzeronNetworkMessageMessageHandler;
+import io.pinect.azeron.server.service.handler.AzeronSeenMessageHandler;
 import io.pinect.azeron.server.service.handler.SubscribeMessageHandler;
 import io.pinect.azeron.server.service.handler.UnSubscribeMessageHandler;
 import io.pinect.azeron.server.service.publisher.AzeronFetchMessagePublisher;
@@ -15,17 +16,19 @@ import static io.pinect.azeron.server.config.ChannelName.*;
 @Log4j2
 public class AzeronMessagingInitializerService implements MessagingInitializerService {
     private final AzeronFetchMessagePublisher azeronFetchMessagePublisher;
-    private final AzeronNetworkMessageMessageHandler azeronFetchMessageHandlerMessageHandler;
+    private final AzeronNetworkMessageMessageHandler azeronNetworkMessageMessageHandler;
     private final SubscribeMessageHandler subscribeMessageHandler;
     private final UnSubscribeMessageHandler unsubscribeMessageHandler;
+    private final AzeronSeenMessageHandler azeronSeenMessageHandler;
     private Nats nats;
 
     @Autowired
-    public AzeronMessagingInitializerService(AzeronFetchMessagePublisher azeronFetchMessagePublisher, AzeronNetworkMessageMessageHandler azeronFetchMessageHandlerMessageHandler, SubscribeMessageHandler subscribeMessageHandler, UnSubscribeMessageHandler unsubscribeMessageHandler) {
+    public AzeronMessagingInitializerService(AzeronFetchMessagePublisher azeronFetchMessagePublisher, AzeronNetworkMessageMessageHandler azeronNetworkMessageMessageHandler, SubscribeMessageHandler subscribeMessageHandler, UnSubscribeMessageHandler unsubscribeMessageHandler, AzeronSeenMessageHandler azeronSeenMessageHandler) {
         this.azeronFetchMessagePublisher = azeronFetchMessagePublisher;
-        this.azeronFetchMessageHandlerMessageHandler = azeronFetchMessageHandlerMessageHandler;
+        this.azeronNetworkMessageMessageHandler = azeronNetworkMessageMessageHandler;
         this.subscribeMessageHandler = subscribeMessageHandler;
         this.unsubscribeMessageHandler = unsubscribeMessageHandler;
+        this.azeronSeenMessageHandler = azeronSeenMessageHandler;
     }
 
     @Override
@@ -36,13 +39,13 @@ public class AzeronMessagingInitializerService implements MessagingInitializerSe
         fetchSubscriptions();
     }
 
-    public void setNats(Nats nats) {
+    public synchronized void setNats(Nats nats) {
         this.nats = nats;
     }
 
     private void fetchNetworkSubscription(){
         log.trace("Fetching Azeron network subscription");
-        nats.subscribe(AZERON_MAIN_CHANNEL_NAME, azeronFetchMessageHandlerMessageHandler);
+        nats.subscribe(AZERON_MAIN_CHANNEL_NAME, azeronNetworkMessageMessageHandler);
         azeronFetchMessagePublisher.publishFetchMessage(nats);
     }
 
@@ -51,5 +54,6 @@ public class AzeronMessagingInitializerService implements MessagingInitializerSe
 
         nats.subscribe(AZERON_SUBSCRIBE_API_NAME, subscribeMessageHandler);
         nats.subscribe(AZERON_UNSUBSCRIBE_API_NAME, unsubscribeMessageHandler);
+        nats.subscribe(AZERON_SEEN_CHANNEL_NAME, "AZERON_SERVER", azeronSeenMessageHandler);
     }
 }

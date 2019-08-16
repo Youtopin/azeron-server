@@ -1,10 +1,10 @@
 package io.pinect.azeron.server.config.properties;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * Azeron server properties
  */
-@ConfigurationProperties(prefix = "azeron.server")
+//@ConfigurationProperties(prefix = "azeron.server")
+@Deprecated
 public class AzeronServerProperties {
     private boolean persistData;
     private boolean useCache = false;
