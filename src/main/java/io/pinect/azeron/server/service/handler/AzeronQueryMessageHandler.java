@@ -8,7 +8,7 @@ import io.pinect.azeron.server.domain.dto.in.MessageDto;
 import io.pinect.azeron.server.domain.dto.in.UnseenQueryDto;
 import io.pinect.azeron.server.domain.dto.out.UnseenResponseDto;
 import io.pinect.azeron.server.domain.entity.MessageEntity;
-import io.pinect.azeron.server.domain.model.ResponseStatus;
+import io.pinect.azeron.server.domain.dto.ResponseStatus;
 import io.pinect.azeron.server.domain.repository.MessageRepository;
 import lombok.extern.log4j.Log4j2;
 import nats.client.Message;

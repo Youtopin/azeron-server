@@ -3,7 +3,7 @@ package io.pinect.azeron.server.domain.dto.out;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.pinect.azeron.server.domain.dto.BasicAzeronReponseDto;
 import io.pinect.azeron.server.domain.dto.in.MessageDto;
-import io.pinect.azeron.server.domain.model.ResponseStatus;
+import io.pinect.azeron.server.domain.dto.ResponseStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

@@ -3,7 +3,7 @@ package io.pinect.azeron.server.service;
 import io.pinect.azeron.server.domain.dto.in.SeenDto;
 import io.pinect.azeron.server.domain.dto.out.SeenResponseDto;
 import io.pinect.azeron.server.domain.entity.MessageEntity;
-import io.pinect.azeron.server.domain.model.ResponseStatus;
+import io.pinect.azeron.server.domain.dto.ResponseStatus;
 import io.pinect.azeron.server.domain.repository.MessageRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
