@@ -8,8 +8,9 @@ import java.util.List;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @ToString
 public class MessageEntity implements Serializable {
     private String channel;

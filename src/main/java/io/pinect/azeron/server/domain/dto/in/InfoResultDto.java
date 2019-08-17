@@ -4,9 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.pinect.azeron.server.config.properties.AzeronServerNatsProperties;
 import io.pinect.azeron.server.domain.dto.BasicAzeronReponseDto;
 import io.pinect.azeron.server.domain.model.ResponseStatus;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 import java.util.Objects;
@@ -15,6 +13,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
 public class InfoResultDto extends BasicAzeronReponseDto {
     private List<InfoResult> results;
 

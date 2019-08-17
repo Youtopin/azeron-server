@@ -13,7 +13,6 @@ import java.io.Serializable;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @Builder
 public class MessageDto implements Serializable {
     private String messageId;
