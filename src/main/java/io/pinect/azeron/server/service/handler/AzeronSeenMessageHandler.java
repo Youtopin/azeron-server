@@ -2,8 +2,8 @@ package io.pinect.azeron.server.service.handler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.pinect.azeron.server.domain.dto.SeenDto;
-import io.pinect.azeron.server.domain.dto.SeenResponseDto;
+import io.pinect.azeron.server.domain.dto.in.SeenDto;
+import io.pinect.azeron.server.domain.dto.out.SeenResponseDto;
 import io.pinect.azeron.server.service.SeenService;
 import lombok.extern.log4j.Log4j2;
 import nats.client.Message;

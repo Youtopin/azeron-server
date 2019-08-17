@@ -1,6 +1,7 @@
-package io.pinect.azeron.server.domain.dto;
+package io.pinect.azeron.server.domain.dto.in;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.pinect.azeron.server.domain.dto.AzeronNetworkMessageDto;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AzeronFetchRequestDto extends AzeronNetworkMessageDto {

@@ -1,7 +1,7 @@
 package io.pinect.azeron.server.service;
 
-import io.pinect.azeron.server.domain.dto.InfoPublishDto;
-import io.pinect.azeron.server.domain.dto.InfoResultDto;
+import io.pinect.azeron.server.domain.dto.out.InfoPublishDto;
+import io.pinect.azeron.server.domain.dto.in.InfoResultDto;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

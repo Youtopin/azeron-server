@@ -1,6 +1,6 @@
 package io.pinect.azeron.server.service.handler;
 
-import io.pinect.azeron.server.domain.dto.MessageDto;
+import io.pinect.azeron.server.domain.dto.in.MessageDto;
 import io.pinect.azeron.server.domain.entity.MessageEntity;
 import io.pinect.azeron.server.domain.repository.MessageRepository;
 import io.pinect.azeron.server.service.tracker.ClientTracker;

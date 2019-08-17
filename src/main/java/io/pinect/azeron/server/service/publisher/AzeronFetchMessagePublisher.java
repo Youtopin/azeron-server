@@ -3,7 +3,7 @@ package io.pinect.azeron.server.service.publisher;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.pinect.azeron.server.config.ChannelName;
-import io.pinect.azeron.server.domain.dto.AzeronFetchRequestDto;
+import io.pinect.azeron.server.domain.dto.in.AzeronFetchRequestDto;
 import io.pinect.azeron.server.domain.model.AzeronServerInfo;
 import io.pinect.azeron.server.service.handler.FetchResponseMessageHandler;
 import lombok.extern.log4j.Log4j2;

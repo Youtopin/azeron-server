@@ -1,6 +1,7 @@
-package io.pinect.azeron.server.domain.dto;
+package io.pinect.azeron.server.domain.dto.in;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.pinect.azeron.server.domain.model.ClientConfig;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,7 +12,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-public class UnSubscribeControlDto {
+public class SubscriptionControlDto {
     private String channelName;
-    private String serviceName;
+    private ClientConfig config;
 }

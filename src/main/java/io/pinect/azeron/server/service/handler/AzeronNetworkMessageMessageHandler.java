@@ -1,10 +1,10 @@
 package io.pinect.azeron.server.service.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.pinect.azeron.server.domain.dto.AzeronChannelListDto;
-import io.pinect.azeron.server.domain.dto.AzeronFetchRequestDto;
+import io.pinect.azeron.server.domain.dto.out.AzeronChannelListDto;
+import io.pinect.azeron.server.domain.dto.in.AzeronFetchRequestDto;
 import io.pinect.azeron.server.domain.dto.AzeronNetworkMessageDto;
-import io.pinect.azeron.server.domain.dto.InfoPublishDto;
+import io.pinect.azeron.server.domain.dto.out.InfoPublishDto;
 import io.pinect.azeron.server.service.FetchService;
 import io.pinect.azeron.server.service.InfoService;
 import nats.client.Message;

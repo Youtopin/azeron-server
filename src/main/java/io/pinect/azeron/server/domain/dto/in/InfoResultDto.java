@@ -1,7 +1,8 @@
-package io.pinect.azeron.server.domain.dto;
+package io.pinect.azeron.server.domain.dto.in;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.pinect.azeron.server.config.properties.AzeronServerNatsProperties;
+import io.pinect.azeron.server.domain.dto.BasicAzeronReponseDto;
 import io.pinect.azeron.server.domain.model.ResponseStatus;
 import lombok.Builder;
 import lombok.Getter;

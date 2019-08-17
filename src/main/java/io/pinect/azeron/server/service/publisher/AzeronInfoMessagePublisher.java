@@ -3,7 +3,7 @@ package io.pinect.azeron.server.service.publisher;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.pinect.azeron.server.config.ChannelName;
 import io.pinect.azeron.server.config.properties.AzeronServerNatsProperties;
-import io.pinect.azeron.server.domain.dto.InfoPublishDto;
+import io.pinect.azeron.server.domain.dto.out.InfoPublishDto;
 import io.pinect.azeron.server.domain.model.AzeronServerInfo;
 import io.pinect.azeron.server.service.tracker.ClientTracker;
 import lombok.extern.log4j.Log4j2;

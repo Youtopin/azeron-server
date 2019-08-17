@@ -1,4 +1,4 @@
-package io.pinect.azeron.server.domain.dto;
+package io.pinect.azeron.server.domain.dto.in;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

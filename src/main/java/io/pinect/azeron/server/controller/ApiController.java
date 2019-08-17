@@ -1,9 +1,9 @@
 package io.pinect.azeron.server.controller;
 
 import io.pinect.azeron.server.config.properties.AzeronServerNatsProperties;
-import io.pinect.azeron.server.domain.dto.InfoResultDto;
-import io.pinect.azeron.server.domain.dto.SeenDto;
-import io.pinect.azeron.server.domain.dto.SeenResponseDto;
+import io.pinect.azeron.server.domain.dto.in.InfoResultDto;
+import io.pinect.azeron.server.domain.dto.in.SeenDto;
+import io.pinect.azeron.server.domain.dto.out.SeenResponseDto;
 import io.pinect.azeron.server.service.InfoService;
 import io.pinect.azeron.server.service.SeenService;
 import lombok.extern.log4j.Log4j2;

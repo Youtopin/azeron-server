@@ -1,6 +1,8 @@
-package io.pinect.azeron.server.domain.dto;
+package io.pinect.azeron.server.domain.dto.out;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.pinect.azeron.server.domain.dto.BasicAzeronReponseDto;
+import io.pinect.azeron.server.domain.dto.in.MessageDto;
 import io.pinect.azeron.server.domain.model.ResponseStatus;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +14,7 @@ import java.util.List;
 @Setter
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UnseenResponseDto extends BasicAzeronReponseDto{
+public class UnseenResponseDto extends BasicAzeronReponseDto {
     private boolean hasMore;
     private int count;
     private List<MessageDto> messages;

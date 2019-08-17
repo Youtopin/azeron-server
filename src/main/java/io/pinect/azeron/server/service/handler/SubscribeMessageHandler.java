@@ -1,6 +1,6 @@
 package io.pinect.azeron.server.service.handler;
 
-import io.pinect.azeron.server.domain.dto.SubscriptionControlDto;
+import io.pinect.azeron.server.domain.dto.in.SubscriptionControlDto;
 import io.pinect.azeron.server.service.tracker.ClientTracker;
 import lombok.extern.log4j.Log4j2;
 import nats.client.Message;

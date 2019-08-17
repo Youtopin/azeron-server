@@ -1,7 +1,7 @@
 package io.pinect.azeron.server.service;
 
-import io.pinect.azeron.server.domain.dto.SeenDto;
-import io.pinect.azeron.server.domain.dto.SeenResponseDto;
+import io.pinect.azeron.server.domain.dto.in.SeenDto;
+import io.pinect.azeron.server.domain.dto.out.SeenResponseDto;
 import io.pinect.azeron.server.domain.entity.MessageEntity;
 import io.pinect.azeron.server.domain.model.ResponseStatus;
 import io.pinect.azeron.server.domain.repository.MessageRepository;

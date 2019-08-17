@@ -1,7 +1,7 @@
 package io.pinect.azeron.server.service.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.pinect.azeron.server.domain.dto.AzeronChannelListDto;
+import io.pinect.azeron.server.domain.dto.out.AzeronChannelListDto;
 import io.pinect.azeron.server.domain.model.ClientConfig;
 import io.pinect.azeron.server.service.tracker.ClientTracker;
 import lombok.extern.log4j.Log4j2;
