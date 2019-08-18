@@ -85,7 +85,7 @@ public class AzeronServerConfiguration {
         threadPoolTaskScheduler.setPoolSize(20);
         threadPoolTaskScheduler.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
         threadPoolTaskScheduler.setRemoveOnCancelPolicy(false);
-        threadPoolTaskScheduler.setThreadGroupName("azeron-client-tasks");
+        threadPoolTaskScheduler.setThreadGroupName("azeron_server");
         threadPoolTaskScheduler.setThreadPriority(Thread.MAX_PRIORITY);
         threadPoolTaskScheduler.setBeanName("azeronTaskScheduler");
         threadPoolTaskScheduler.initialize();
