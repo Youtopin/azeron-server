@@ -12,8 +12,9 @@ public class VoidMessageRepository implements MessageRepository {
     }
 
     @Override
-    public void addMessage(MessageEntity messageEntity) {
+    public MessageEntity addMessage(MessageEntity messageEntity) {
         log.trace("Added new message to repository -> "+ messageEntity);
+        return messageEntity;
     }
 
     @Override
@@ -28,9 +29,8 @@ public class VoidMessageRepository implements MessageRepository {
     }
 
     @Override
-    public MessageEntity removeMessage(String messageId) {
+    public void removeMessage(String messageId) {
         log.trace("Removing message from repository -> messageId: "+ messageId);
-        return new MessageEntity();
     }
 
     @Override
