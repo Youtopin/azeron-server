@@ -1,1 +1,2 @@
 - Atomic updates for channel sync
+- Publish event when server is shutting down so clients can notice
