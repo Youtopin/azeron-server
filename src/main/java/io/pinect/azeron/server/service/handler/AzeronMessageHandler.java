@@ -43,6 +43,7 @@ public class AzeronMessageHandler extends AbstractMessageHandler {
         MessageEntity messageEntity = toMessageEntityConverter.convert(messageDto);
         assert messageEntity != null;
         messageEntity.setSubscribers(servicesOfChannel);
+        messageEntity.setSeenNeeded(servicesOfChannel.size());
         messageRepository.addMessage(messageEntity);
     }
 

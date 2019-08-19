@@ -1,5 +1,6 @@
 package io.pinect.azeron.server.config;
 
+import io.netty.channel.nio.NioEventLoopGroup;
 import io.pinect.azeron.server.AtomicNatsHolder;
 import io.pinect.azeron.server.config.properties.AzeronServerNatsProperties;
 import io.pinect.azeron.server.config.properties.AzeronServerProperties;
@@ -25,6 +26,7 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 import java.util.UUID;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -56,7 +58,10 @@ public class AzeronServerConfiguration {
         natsConnector.automaticReconnect(true);
         natsConnector.idleTimeout(azeronServerNatsProperties.getIdleTimeOut());
         natsConnector.pedantic(azeronServerNatsProperties.isPedanic());
+        natsConnector.eventLoopGroup(new NioEventLoopGroup());
         natsConnector.reconnectWaitTime(5 , TimeUnit.SECONDS);
+        natsConnector.eventLoopGroup(new NioEventLoopGroup());
+        natsConnector.calllbackExecutor(new ScheduledThreadPoolExecutor(20));
         Nats nats = natsConnector.connect();
         return new AtomicNatsHolder(nats);
     }

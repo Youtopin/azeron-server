@@ -86,11 +86,11 @@ public class AzeronMessagingInitializerService implements MessagingInitializerSe
     private void fetchSubscriptions(){
         log.trace("Fetching channel s/u subscription");
 
-        Subscription subscribe = nats.subscribe(AZERON_SUBSCRIBE_API_NAME, subscribeMessageHandler);
+        Subscription subscribe = nats.subscribe(AZERON_SEEN_CHANNEL_NAME, azeronServerProperties.getQueueName(), azeronSeenMessageHandler);
         subscriptionList.add(subscribe);
-        Subscription subscribe1 = nats.subscribe(AZERON_UNSUBSCRIBE_API_NAME, unsubscribeMessageHandler);
+        Subscription subscribe1 = nats.subscribe(AZERON_SUBSCRIBE_API_NAME, subscribeMessageHandler);
         subscriptionList.add(subscribe1);
-        Subscription subscribe2 = nats.subscribe(AZERON_SEEN_CHANNEL_NAME, azeronServerProperties.getQueueName(), azeronSeenMessageHandler);
+        Subscription subscribe2 = nats.subscribe(AZERON_UNSUBSCRIBE_API_NAME, unsubscribeMessageHandler);
         subscriptionList.add(subscribe2);
     }
 

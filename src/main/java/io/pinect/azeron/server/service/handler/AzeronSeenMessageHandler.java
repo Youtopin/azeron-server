@@ -32,7 +32,8 @@ public class AzeronSeenMessageHandler implements MessageHandler {
         SeenResponseDto seenResponseDto = seenService.seen(seenDto);
         try {
             if(message.isRequest())
-                message.reply(objectMapper.writeValueAsString(seenResponseDto), 10, TimeUnit.SECONDS);
+                message.reply(objectMapper.writeValueAsString(seenResponseDto));
+            log.trace("sent seen response for reqId: "+ seenDto.getReqId());
         } catch (JsonProcessingException e) {
             log.error(e);
         }
