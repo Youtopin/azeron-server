@@ -3,6 +3,7 @@ package io.pinect.azeron.server.domain.repository;
 import io.pinect.azeron.server.domain.entity.MessageEntity;
 import lombok.extern.log4j.Log4j2;
 
+import java.util.Date;
 import java.util.List;
 
 @Log4j2
@@ -34,7 +35,7 @@ public class VoidMessageRepository implements MessageRepository {
     }
 
     @Override
-    public MessageResult getUnseenMessagesOfService(String serviceName, int offset, int limit) {
+    public MessageResult getUnseenMessagesOfService(String serviceName, int offset, int limit, Date before) {
         log.trace("Getting unseen messages from repository -> serviceName: "+ serviceName);
         return new MessageResult();
     }

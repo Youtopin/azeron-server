@@ -16,6 +16,7 @@ public class InfoPublishDto extends AzeronNetworkMessageDto {
     private int channelsCount;
 
     public InfoPublishDto() {
+        super(MessageType.INFO);
     }
 
     public InfoPublishDto(String serverUUID){

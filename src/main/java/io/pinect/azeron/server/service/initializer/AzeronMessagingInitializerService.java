@@ -6,11 +6,14 @@ import io.pinect.azeron.server.service.publisher.AzeronFetchMessagePublisher;
 import io.pinect.azeron.server.service.publisher.AzeronInfoMessagePublisher;
 import lombok.extern.log4j.Log4j2;
 import nats.client.Nats;
+import nats.client.Subscription;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.support.PeriodicTrigger;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -28,7 +31,9 @@ public class AzeronMessagingInitializerService implements MessagingInitializerSe
     private final AzeronQueryMessageHandler azeronQueryMessageHandler;
     private final AzeronServerProperties azeronServerProperties;
     private final TaskScheduler azeronTaskScheduler;
-    private ScheduledFuture<?> schedule;
+    private ScheduledFuture<?> fetchInfoSchedule;
+    private ScheduledFuture<?> fetchChannelSchedule;
+    private List<Subscription> subscriptionList = new CopyOnWriteArrayList<>();
     private Nats nats;
 
     @Autowired
@@ -45,8 +50,9 @@ public class AzeronMessagingInitializerService implements MessagingInitializerSe
     }
 
     @Override
-    public void init(Nats nats) {
+    public synchronized void init(Nats nats) {
         log.trace("(re)initializing Azeron Server");
+        cancelPreviousSubs();
         setNats(nats);
         fetchNetworkSubscription();
         fetchSubscriptions();
@@ -55,9 +61,15 @@ public class AzeronMessagingInitializerService implements MessagingInitializerSe
         fetchChannelSync();
     }
 
+    private void cancelPreviousSubs() {
+        log.trace("Closing previous subscriptions");
+        subscriptionList.forEach(Subscription::close);
+    }
+
     private void fetchQueryHandler() {
         log.trace("Fetching query handler");
-        nats.subscribe(AZERON_QUERY_CHANNEL_NAME, azeronServerProperties.getQueueName(), azeronQueryMessageHandler);
+        Subscription subscribe = nats.subscribe(AZERON_QUERY_CHANNEL_NAME, azeronServerProperties.getQueueName(), azeronQueryMessageHandler);
+        subscriptionList.add(subscribe);
     }
 
     public synchronized void setNats(Nats nats) {
@@ -66,24 +78,27 @@ public class AzeronMessagingInitializerService implements MessagingInitializerSe
 
     private void fetchNetworkSubscription(){
         log.trace("Fetching Azeron network subscription");
-        nats.subscribe(AZERON_MAIN_CHANNEL_NAME, azeronNetworkMessageMessageHandler);
+        Subscription subscribe = nats.subscribe(AZERON_MAIN_CHANNEL_NAME, azeronNetworkMessageMessageHandler);
+        subscriptionList.add(subscribe);
         azeronFetchMessagePublisher.publishFetchMessage(nats);
     }
 
     private void fetchSubscriptions(){
         log.trace("Fetching channel s/u subscription");
 
-        nats.subscribe(AZERON_SUBSCRIBE_API_NAME, subscribeMessageHandler);
-        nats.subscribe(AZERON_UNSUBSCRIBE_API_NAME, unsubscribeMessageHandler);
-        nats.subscribe(AZERON_SEEN_CHANNEL_NAME, azeronServerProperties.getQueueName(), azeronSeenMessageHandler);
+        Subscription subscribe = nats.subscribe(AZERON_SUBSCRIBE_API_NAME, subscribeMessageHandler);
+        subscriptionList.add(subscribe);
+        Subscription subscribe1 = nats.subscribe(AZERON_UNSUBSCRIBE_API_NAME, unsubscribeMessageHandler);
+        subscriptionList.add(subscribe1);
+        Subscription subscribe2 = nats.subscribe(AZERON_SEEN_CHANNEL_NAME, azeronServerProperties.getQueueName(), azeronSeenMessageHandler);
+        subscriptionList.add(subscribe2);
     }
 
     private void fetchInfoSync(){
-        if(this.schedule != null)
-            schedule.cancel(true);
+        if(this.fetchInfoSchedule != null)
+            fetchInfoSchedule.cancel(true);
         PeriodicTrigger periodicTrigger = new PeriodicTrigger(azeronServerProperties.getInfoSyncIntervalSeconds(), TimeUnit.SECONDS);
-        periodicTrigger.setInitialDelay(azeronServerProperties.getInfoSyncIntervalSeconds() * 1000);
-        this.schedule = azeronTaskScheduler.schedule(new Runnable() {
+        this.fetchInfoSchedule = azeronTaskScheduler.schedule(new Runnable() {
             @Override
             public void run() {
                 azeronInfoMessagePublisher.publishInfoMessage(nats);
@@ -92,10 +107,13 @@ public class AzeronMessagingInitializerService implements MessagingInitializerSe
     }
 
     private void fetchChannelSync(){
+        if(this.fetchChannelSchedule != null)
+            this.fetchChannelSchedule.cancel(true);
+
         if(azeronServerProperties.isShouldSyncChannels()){
             PeriodicTrigger periodicTrigger = new PeriodicTrigger(azeronServerProperties.getChannelSyncIntervalSeconds(), TimeUnit.SECONDS);
             periodicTrigger.setInitialDelay(azeronServerProperties.getChannelSyncIntervalSeconds() * 1000);
-            this.schedule = azeronTaskScheduler.schedule(new Runnable() {
+            this.fetchChannelSchedule = azeronTaskScheduler.schedule(new Runnable() {
                 @Override
                 public void run() {
                     azeronFetchMessagePublisher.publishFetchMessage(nats);

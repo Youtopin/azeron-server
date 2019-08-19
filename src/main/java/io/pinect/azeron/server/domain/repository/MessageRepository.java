@@ -1,11 +1,9 @@
 package io.pinect.azeron.server.domain.repository;
 
 import io.pinect.azeron.server.domain.entity.MessageEntity;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+import java.util.Date;
 import java.util.List;
 
 public interface MessageRepository {
@@ -13,11 +11,12 @@ public interface MessageRepository {
     MessageEntity seenMessage(String messageId, String serviceName);
     void seenMessages(List<String> messageId, String serviceName);
     void removeMessage(String messageId);
-    MessageResult getUnseenMessagesOfService(String serviceName, int offset, int limit);
+    MessageResult getUnseenMessagesOfService(String serviceName, int offset, int limit, Date before);
 
     @Getter
     @Setter
     @NoArgsConstructor
+    @AllArgsConstructor
     @Builder
     class MessageResult {
         List<MessageEntity> messages;

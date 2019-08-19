@@ -6,6 +6,7 @@ import io.pinect.azeron.server.domain.model.AzeronServerInfo;
 import io.pinect.azeron.server.domain.model.ClientConfig;
 import io.pinect.azeron.server.service.tracker.ClientTracker;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ public class FetchService {
     private final AzeronServerInfo azeronServerInfo;
 
     @Autowired
-    public FetchService(ClientTracker clientTracker, AzeronServerInfo azeronServerInfo) {
+    public FetchService(@Lazy ClientTracker clientTracker, AzeronServerInfo azeronServerInfo) {
         this.clientTracker = clientTracker;
         this.azeronServerInfo = azeronServerInfo;
     }

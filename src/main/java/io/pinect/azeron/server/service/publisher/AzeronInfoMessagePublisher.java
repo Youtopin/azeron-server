@@ -3,6 +3,7 @@ package io.pinect.azeron.server.service.publisher;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.pinect.azeron.server.config.ChannelName;
 import io.pinect.azeron.server.config.properties.AzeronServerNatsProperties;
+import io.pinect.azeron.server.domain.dto.AzeronNetworkMessageDto;
 import io.pinect.azeron.server.domain.dto.out.InfoPublishDto;
 import io.pinect.azeron.server.domain.model.AzeronServerInfo;
 import io.pinect.azeron.server.service.tracker.ClientTracker;
@@ -39,9 +40,13 @@ public class AzeronInfoMessagePublisher {
     }
 
     private InfoPublishDto getInfoPublishDto(int channelsSize) {
-        return InfoPublishDto.builder()
+        InfoPublishDto infoPublishDto = InfoPublishDto.builder()
                 .channelsCount(channelsSize)
                 .nats(azeronServerNatsProperties)
                 .build();
+
+        infoPublishDto.setServerUUID(azeronServerInfo.getId());
+        infoPublishDto.setType(AzeronNetworkMessageDto.MessageType.INFO);
+        return infoPublishDto;
     }
 }

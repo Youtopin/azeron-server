@@ -52,7 +52,7 @@ public class AzeronServerConfiguration {
         NatsConnector natsConnector = new NatsConnector();
         natsConnector.addConnectionStateListener(new ApplicationEventPublishingConnectionStateListener(this.applicationContext));
         natsConnector.addConnectionStateListener(natsConnectionStateListener);
-        natsConnector.addHost(azeronServerNatsProperties.getHost());
+        natsConnector.addHost(azeronServerNatsProperties.getProtocol()+"://"+azeronServerNatsProperties.getHost());
         natsConnector.automaticReconnect(true);
         natsConnector.idleTimeout(azeronServerNatsProperties.getIdleTimeOut());
         natsConnector.pedantic(azeronServerNatsProperties.isPedanic());
@@ -72,7 +72,7 @@ public class AzeronServerConfiguration {
         return new AzeronServerInfo(UUID.randomUUID().toString(), 1);
     }
 
-    @Bean
+    @Bean("clientTracker")
     public ClientTracker clientTracker(){
         InMemoryClientTracker inMemoryClientTracker = new InMemoryClientTracker();
         inMemoryClientTracker.addListener(clientStateListenerService);

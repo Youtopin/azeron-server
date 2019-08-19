@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/v1/api")
+@RequestMapping("/api/v1")
 @Log4j2
 public class ApiController {
     private final AzeronServerNatsProperties azeronServerNatsProperties;

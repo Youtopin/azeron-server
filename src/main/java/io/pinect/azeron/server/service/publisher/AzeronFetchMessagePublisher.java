@@ -9,6 +9,7 @@ import io.pinect.azeron.server.service.handler.FetchResponseMessageHandler;
 import lombok.extern.log4j.Log4j2;
 import nats.client.Nats;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.TimeUnit;
@@ -21,22 +22,22 @@ public class AzeronFetchMessagePublisher {
     private final ObjectMapper objectMapper;
 
     @Autowired
-    public AzeronFetchMessagePublisher(AzeronServerInfo azeronServerInfo, FetchResponseMessageHandler fetchResponseMessageHandler, ObjectMapper objectMapper) {
+    public AzeronFetchMessagePublisher(@Lazy AzeronServerInfo azeronServerInfo, FetchResponseMessageHandler fetchResponseMessageHandler, ObjectMapper objectMapper) {
         this.azeronServerInfo = azeronServerInfo;
         this.fetchResponseMessageHandler = fetchResponseMessageHandler;
         this.objectMapper = objectMapper;
     }
 
     public void publishFetchMessage(Nats nats){
-        log.trace("Publishing nats fetch message");
+        log.trace("Publishing nats fetch message ...");
 
         AzeronFetchRequestDto azeronFetchRequestDto = new AzeronFetchRequestDto(azeronServerInfo.getId());
         String json = null;
         try {
             json = objectMapper.writeValueAsString(azeronFetchRequestDto);
-            nats.request(ChannelName.AZERON_MAIN_CHANNEL_NAME, json, 1, TimeUnit.MINUTES, fetchResponseMessageHandler);
+            nats.request(ChannelName.AZERON_MAIN_CHANNEL_NAME, json, 10, TimeUnit.SECONDS, fetchResponseMessageHandler);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            log.error(e);
         }
     }
 }
