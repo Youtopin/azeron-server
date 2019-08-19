@@ -20,10 +20,11 @@ public class InMemoryClientTracker implements ClientTracker {
     public boolean addClient(String channelName, ClientConfig clientConfig) {
         List<ClientConfig> clientConfigs = channelToClientConfigsMap.putIfAbsent(channelName, Collections.singletonList(clientConfig));
         boolean added = true;
-        if(clientConfigs != null && !clientConfigs.contains(clientConfig)){
-            clientConfigs.add(clientConfig);
-        }else {
-            added = false;
+        if(clientConfigs != null){
+            if(clientConfigs.contains(clientConfig))
+                added = false;
+            else
+                clientConfigs.add(clientConfig);
         }
 
         synchronized (serviceToChannelsMap){
@@ -37,7 +38,7 @@ public class InMemoryClientTracker implements ClientTracker {
         }
 
         if(added){
-            log.trace("Added new client to tracker -> "+ clientConfig);
+            log.trace("Added new client to tracker for channel "+ channelName +" -> "+ clientConfig);
             clientStateListeners.forEach(clientStateListener -> {
                 clientStateListener.onCreate(this, channelName, clientConfig);
             });
