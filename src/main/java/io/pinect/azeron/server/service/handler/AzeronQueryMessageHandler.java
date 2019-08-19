@@ -17,6 +17,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -43,14 +44,18 @@ public class AzeronQueryMessageHandler implements MessageHandler {
             return;
         try {
             UnseenQueryDto unseenQueryDto = objectMapper.readValue(message.getBody(), UnseenQueryDto.class);
+            log.trace("UnSeen Query -> "+ unseenQueryDto.toString());
             MessageRepository.MessageResult messageResult = messageRepository.getUnseenMessagesOfService(unseenQueryDto.getServiceName(), 0, azeronServerProperties.getUnseenQueryLimit(), new Date(unseenQueryDto.getDateBefore()));
             List<MessageDto> messageDtos = entityToMessageDtoListConverter.convert(messageResult.getMessages());
             UnseenResponseDto unseenResponseDto = UnseenResponseDto.builder()
                     .hasMore(messageResult.isHasMore())
                     .count(messageDtos != null ? messageDtos.size() : 0)
-                    .messages(messageDtos)
+                    .messages(messageDtos != null ? messageDtos : new ArrayList<>())
                     .build();
-            message.reply(objectMapper.writeValueAsString(unseenResponseDto), 15, TimeUnit.SECONDS);
+
+            String value = objectMapper.writeValueAsString(unseenResponseDto);
+            log.trace("UnSeen Response -> "+ value);
+            message.reply(value);
         } catch (IOException e) {
             log.error(e);
             try {
