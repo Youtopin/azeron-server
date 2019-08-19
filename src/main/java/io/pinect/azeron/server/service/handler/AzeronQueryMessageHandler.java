@@ -47,6 +47,7 @@ public class AzeronQueryMessageHandler implements MessageHandler {
             List<MessageDto> messageDtos = entityToMessageDtoListConverter.convert(messageResult.getMessages());
             UnseenResponseDto unseenResponseDto = UnseenResponseDto.builder()
                     .hasMore(messageResult.isHasMore())
+                    .count(messageDtos != null ? messageDtos.size() : 0)
                     .messages(messageDtos)
                     .build();
             message.reply(objectMapper.writeValueAsString(unseenResponseDto), 15, TimeUnit.SECONDS);

@@ -26,9 +26,15 @@ public class InMemoryClientTracker implements ClientTracker {
             added = false;
         }
 
-        List<String> channelNames = serviceToChannelsMap.putIfAbsent(clientConfig.getServiceName(), Collections.singletonList(channelName));
-        if(channelNames != null && !channelNames.contains(channelName))
-            channelNames.add(channelName);
+        synchronized (serviceToChannelsMap){
+            List<String> channelNames = serviceToChannelsMap.get(clientConfig.getServiceName());
+            if(channelNames == null){
+                channelNames = new CopyOnWriteArrayList<>();
+                channelNames.add(channelName);
+            }else if(!channelNames.contains(channelName)){
+                channelNames.add(channelName);
+            }
+        }
 
         if(added){
             log.trace("Added new client to tracker -> "+ clientConfig);
