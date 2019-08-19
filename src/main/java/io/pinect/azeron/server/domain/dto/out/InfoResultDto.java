@@ -4,7 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.pinect.azeron.server.config.properties.AzeronServerNatsProperties;
 import io.pinect.azeron.server.domain.dto.BasicAzeronReponseDto;
 import io.pinect.azeron.server.domain.dto.ResponseStatus;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 import java.util.Objects;

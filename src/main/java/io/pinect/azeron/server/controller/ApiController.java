@@ -1,8 +1,8 @@
 package io.pinect.azeron.server.controller;
 
 import io.pinect.azeron.server.config.properties.AzeronServerNatsProperties;
-import io.pinect.azeron.server.domain.dto.out.InfoResultDto;
 import io.pinect.azeron.server.domain.dto.in.SeenDto;
+import io.pinect.azeron.server.domain.dto.out.InfoResultDto;
 import io.pinect.azeron.server.domain.dto.out.SeenResponseDto;
 import io.pinect.azeron.server.service.InfoService;
 import io.pinect.azeron.server.service.SeenService;
