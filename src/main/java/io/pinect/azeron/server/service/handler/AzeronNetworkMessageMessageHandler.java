@@ -5,6 +5,7 @@ import io.pinect.azeron.server.domain.dto.AzeronNetworkMessageDto;
 import io.pinect.azeron.server.domain.dto.in.AzeronFetchRequestDto;
 import io.pinect.azeron.server.domain.dto.out.AzeronChannelListDto;
 import io.pinect.azeron.server.domain.dto.out.InfoPublishDto;
+import io.pinect.azeron.server.domain.model.AzeronServerInfo;
 import io.pinect.azeron.server.service.FetchService;
 import io.pinect.azeron.server.service.InfoService;
 import nats.client.Message;
@@ -24,14 +25,16 @@ public class AzeronNetworkMessageMessageHandler extends AbstractMessageHandler {
     private final ObjectMapper objectMapper;
     private final FetchService fetchService;
     private final InfoService infoService;
+    private final AzeronServerInfo azeronServerInfo;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     @Autowired
-    public AzeronNetworkMessageMessageHandler(ObjectMapper objectMapper, FetchService fetchService, InfoService infoService) {
+    public AzeronNetworkMessageMessageHandler(ObjectMapper objectMapper, FetchService fetchService, InfoService infoService, AzeronServerInfo azeronServerInfo) {
         this.objectMapper = objectMapper;
         this.fetchService = fetchService;
         this.infoService = infoService;
+        this.azeronServerInfo = azeronServerInfo;
     }
 
     @Override

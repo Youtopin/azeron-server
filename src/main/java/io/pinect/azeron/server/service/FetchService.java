@@ -27,7 +27,8 @@ public class FetchService {
     public AzeronChannelListDto fetch(AzeronFetchRequestDto azeronFetchRequestDto) {
         if(azeronFetchRequestDto.getServerUUID().equals(azeronServerInfo.getId()))
             return null;
-        return getJsonFromChannelsMap();
+        else
+            return getJsonFromChannelsMap();
     }
 
     private AzeronChannelListDto getJsonFromChannelsMap() {

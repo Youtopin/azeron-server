@@ -53,6 +53,7 @@ public class AzeronQueryMessageHandler implements MessageHandler {
                     .messages(messageDtos != null ? messageDtos : new ArrayList<>())
                     .build();
 
+            unseenResponseDto.setStatus(ResponseStatus.OK);
             String value = objectMapper.writeValueAsString(unseenResponseDto);
             log.trace("UnSeen Response -> "+ value);
             message.reply(value);

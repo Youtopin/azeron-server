@@ -32,6 +32,7 @@ public class InMemoryClientTracker implements ClientTracker {
             if(channelNames == null){
                 channelNames = new CopyOnWriteArrayList<>();
                 channelNames.add(channelName);
+                serviceToChannelsMap.put(clientConfig.getServiceName(), channelNames);
             }else if(!channelNames.contains(channelName)){
                 channelNames.add(channelName);
             }
