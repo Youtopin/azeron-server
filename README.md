@@ -1,5 +1,5 @@
 # Azeron-Server
-Azeron Server - The scalable and reliable messaging library, Wraps nats.io and uses Java Spring framework
+The scalable and reliable event messaging library, Wraps nats.io and uses Java Spring framework.
 
 ---
 
