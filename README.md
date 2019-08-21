@@ -19,6 +19,7 @@ For example, the repository layer of Azeron server is abstract. You can implemen
 If following list matches your needs, then you might want to consider using Azeron.
 
 - A very fast message delivery when all instances are up
+- Your messages are only text based, and mostly not too large
 - Ability to handle message persistence on any database you prefer, but also choose some default values
 - You don't care about chance of loosing some of your messages (fixable through the configuration you choose, also it will be fixed in next releases)
 
