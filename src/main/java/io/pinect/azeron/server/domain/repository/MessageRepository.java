@@ -8,10 +8,11 @@ import java.util.List;
 
 public interface MessageRepository {
     MessageEntity addMessage(MessageEntity messageEntity);
-    MessageEntity seenMessage(String messageId, String serviceName);
+    void seenMessage(String messageId, String serviceName);
     void seenMessages(List<String> messageId, String serviceName);
     void removeMessage(String messageId);
     MessageResult getUnseenMessagesOfService(String serviceName, int offset, int limit, Date before);
+    MessageEntity getMessage(String messageId);
 
     @Getter
     @Setter

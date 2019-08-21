@@ -19,9 +19,8 @@ public class VoidMessageRepository implements MessageRepository {
     }
 
     @Override
-    public MessageEntity seenMessage(String messageId, String serviceName) {
-        log.trace("Added seem to message in repository -> messageId: "+ messageId + ", serviceName: "+ serviceName);
-        return new MessageEntity();
+    public void seenMessage(String messageId, String serviceName) {
+        log.trace("Added seen to message in repository -> messageId: "+ messageId + ", serviceName: "+ serviceName);
     }
 
     @Override
@@ -38,5 +37,10 @@ public class VoidMessageRepository implements MessageRepository {
     public MessageResult getUnseenMessagesOfService(String serviceName, int offset, int limit, Date before) {
         log.trace("Getting unseen messages from repository -> serviceName: "+ serviceName);
         return new MessageResult();
+    }
+
+    @Override
+    public MessageEntity getMessage(String messageId) {
+        return new MessageEntity();
     }
 }

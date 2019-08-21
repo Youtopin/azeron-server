@@ -23,9 +23,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 import java.util.UUID;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -95,6 +97,21 @@ public class AzeronServerConfiguration {
         threadPoolTaskScheduler.setBeanName("azeronTaskScheduler");
         threadPoolTaskScheduler.initialize();
         return threadPoolTaskScheduler;
+    }
+
+    @Bean("azeronExecutor")
+    public Executor azeronExecutor(){
+        ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
+        threadPoolTaskExecutor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+        threadPoolTaskExecutor.setWaitForTasksToCompleteOnShutdown(true);
+        threadPoolTaskExecutor.setQueueCapacity(100);
+        threadPoolTaskExecutor.setMaxPoolSize(100);
+        threadPoolTaskExecutor.setCorePoolSize(20);
+        threadPoolTaskExecutor.setDaemon(true);
+        threadPoolTaskExecutor.setThreadNamePrefix("azeron_executor");
+        threadPoolTaskExecutor.setBeanName("azeronExecutor");
+        threadPoolTaskExecutor.setAwaitTerminationSeconds(10);
+        return threadPoolTaskExecutor;
     }
 
 }
