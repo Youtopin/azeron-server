@@ -14,7 +14,7 @@ Also Azeron can keep listening to events for a service while they are down and p
 The thoughts behind Azeron is to provide simple abstraction layer to anyone who wants to use it.
 For example, the repository layer of Azeron server is abstract. You can implement it with any database you want. Or you can implement clustered nodes for high-availability. There are different examples of Azeron available [here](https://github.com/pinect-io/azeron-examples).
 
-###Is azeron a good solution for me?
+### Is azeron a good solution for me?
 
 If following list matches your needs, then you might want to consider using Azeron.
 
