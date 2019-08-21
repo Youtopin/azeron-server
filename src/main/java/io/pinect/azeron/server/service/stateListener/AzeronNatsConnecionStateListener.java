@@ -14,7 +14,7 @@ public class AzeronNatsConnecionStateListener implements NatsConnectionStateList
     private State state = State.DISCONNECTED;
 
     @Autowired
-    public AzeronNatsConnecionStateListener(@Lazy MessagingInitializerService messagingInitializerService) {
+    public AzeronNatsConnecionStateListener(MessagingInitializerService messagingInitializerService) {
         this.messagingInitializerService = messagingInitializerService;
     }
 

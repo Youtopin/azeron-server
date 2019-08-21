@@ -22,7 +22,7 @@ public class AzeronFetchMessagePublisher {
     private final ObjectMapper objectMapper;
 
     @Autowired
-    public AzeronFetchMessagePublisher(@Lazy AzeronServerInfo azeronServerInfo, FetchResponseMessageHandler fetchResponseMessageHandler, ObjectMapper objectMapper) {
+    public AzeronFetchMessagePublisher(AzeronServerInfo azeronServerInfo, FetchResponseMessageHandler fetchResponseMessageHandler, ObjectMapper objectMapper) {
         this.azeronServerInfo = azeronServerInfo;
         this.fetchResponseMessageHandler = fetchResponseMessageHandler;
         this.objectMapper = objectMapper;

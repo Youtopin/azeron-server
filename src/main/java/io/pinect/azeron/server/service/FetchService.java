@@ -19,7 +19,7 @@ public class FetchService {
     private final AzeronServerInfo azeronServerInfo;
 
     @Autowired
-    public FetchService(@Lazy ClientTracker clientTracker, AzeronServerInfo azeronServerInfo) {
+    public FetchService(ClientTracker clientTracker, AzeronServerInfo azeronServerInfo) {
         this.clientTracker = clientTracker;
         this.azeronServerInfo = azeronServerInfo;
     }

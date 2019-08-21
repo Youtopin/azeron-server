@@ -19,9 +19,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.*;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
@@ -43,7 +41,7 @@ public class AzeronServerConfiguration {
     private final ClientStateListenerService clientStateListenerService;
 
     @Autowired
-    public AzeronServerConfiguration(AzeronServerNatsProperties azeronServerNatsProperties, ApplicationContext applicationContext, NatsConnectionStateListener natsConnectionStateListener, ClientStateListenerService clientStateListenerService) {
+    public AzeronServerConfiguration(AzeronServerNatsProperties azeronServerNatsProperties, ApplicationContext applicationContext, @Lazy NatsConnectionStateListener natsConnectionStateListener, @Lazy ClientStateListenerService clientStateListenerService) {
         this.azeronServerNatsProperties = azeronServerNatsProperties;
         this.applicationContext = applicationContext;
         this.natsConnectionStateListener = natsConnectionStateListener;
@@ -52,6 +50,7 @@ public class AzeronServerConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(value = AtomicNatsHolder.class)
+    @DependsOn({"natsConnectionStateListener", "messageRepository", "azeronServerInfo"})
     public AtomicNatsHolder atomicNatsHolder(){
         NatsConnector natsConnector = new NatsConnector();
         natsConnector.addConnectionStateListener(new ApplicationEventPublishingConnectionStateListener(this.applicationContext));

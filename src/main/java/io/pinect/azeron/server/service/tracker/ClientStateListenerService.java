@@ -25,7 +25,7 @@ public class ClientStateListenerService implements ClientTracker.ClientStateList
     private final Map<String, Subscription> channelToSubscriptionMap = new ConcurrentHashMap<>();
 
     @Autowired
-    public ClientStateListenerService(@Lazy AzeronMessageHandler azeronMessageHandler, @Lazy AtomicNatsHolder atomicNatsHolder) {
+    public ClientStateListenerService(AzeronMessageHandler azeronMessageHandler, AtomicNatsHolder atomicNatsHolder) {
         this.azeronMessageHandler = azeronMessageHandler;
         this.atomicNatsHolder = atomicNatsHolder;
     }
