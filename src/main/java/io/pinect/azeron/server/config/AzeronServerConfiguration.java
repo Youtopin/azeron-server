@@ -55,14 +55,13 @@ public class AzeronServerConfiguration {
         NatsConnector natsConnector = new NatsConnector();
         natsConnector.addConnectionStateListener(new ApplicationEventPublishingConnectionStateListener(this.applicationContext));
         natsConnector.addConnectionStateListener(natsConnectionStateListener);
-        natsConnector.addHost(azeronServerNatsProperties.getProtocol()+"://"+azeronServerNatsProperties.getHost());
+        natsConnector.addHost(azeronServerNatsProperties.getProtocol()+"://"+azeronServerNatsProperties.getHost()+":"+azeronServerNatsProperties.getPort());
         natsConnector.automaticReconnect(true);
         natsConnector.idleTimeout(azeronServerNatsProperties.getIdleTimeOut());
         natsConnector.pedantic(azeronServerNatsProperties.isPedanic());
-        natsConnector.eventLoopGroup(new NioEventLoopGroup());
         natsConnector.reconnectWaitTime(5 , TimeUnit.SECONDS);
-        natsConnector.eventLoopGroup(new NioEventLoopGroup());
-        natsConnector.calllbackExecutor(new ScheduledThreadPoolExecutor(20));
+        natsConnector.eventLoopGroup(new NioEventLoopGroup(500));
+        natsConnector.calllbackExecutor(new ScheduledThreadPoolExecutor(50));
         Nats nats = natsConnector.connect();
         return new AtomicNatsHolder(nats);
     }
