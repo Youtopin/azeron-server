@@ -10,10 +10,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Getter
 @Setter
 public class AzeronServerNatsProperties {
-    private String host = "localhost";
-    private String hostIp = "127.0.0.1";
-    private String protocol="nats";
-    private String port = "4222";
+    private String[] hosts = new String[]{"nats://localhost:4222"};
     private boolean useEpoll;
     private int idleTimeOut;
     private boolean pedanic;

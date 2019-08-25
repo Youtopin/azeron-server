@@ -55,7 +55,9 @@ public class AzeronServerConfiguration {
         NatsConnector natsConnector = new NatsConnector();
         natsConnector.addConnectionStateListener(new ApplicationEventPublishingConnectionStateListener(this.applicationContext));
         natsConnector.addConnectionStateListener(natsConnectionStateListener);
-        natsConnector.addHost(azeronServerNatsProperties.getProtocol()+"://"+azeronServerNatsProperties.getHost()+":"+azeronServerNatsProperties.getPort());
+        for (String host : azeronServerNatsProperties.getHosts()) {
+            natsConnector.addHost(host);
+        }
         natsConnector.automaticReconnect(true);
         natsConnector.idleTimeout(azeronServerNatsProperties.getIdleTimeOut());
         natsConnector.pedantic(azeronServerNatsProperties.isPedanic());
