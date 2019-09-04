@@ -6,6 +6,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Getter
 @Setter
@@ -18,11 +20,34 @@ public class MessageEntity implements Serializable {
     private String messageId;
     private String message;
     private String sender;
-    private List<String> subscribers;
+    private List<String> subscribers = new CopyOnWriteArrayList<>();
     @Builder.Default
-    private List<String> seenSubscribers = new ArrayList<>();
-    private int seenNeeded;
-    private int seenCount;
-    private Date date;
+    private List<String> seenSubscribers = new CopyOnWriteArrayList<>();
+    private int seenNeeded = 0;
+    private int seenCount = 0;
+    private Date date = new Date();
     private boolean completed;
+
+    public boolean isFullyAcknowledged(){
+        return seenCount == seenNeeded || seenSubscribers.size() == subscribers.size();
+    }
+
+    public synchronized void increaseSeenCount(){
+        seenCount++;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MessageEntity that = (MessageEntity) o;
+        return Objects.equals(channel, that.channel) &&
+                Objects.equals(messageId, that.messageId);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(channel, messageId);
+    }
 }
