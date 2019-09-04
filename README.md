@@ -180,3 +180,45 @@ Example reponse:
 	  "status": "OK",
 	  "reqId": ********
 	}
+
+
+## EXTRA
+
+Here are some extra things you can add to your Azeron Server configuration for better performance or more usability.
+
+### Message Repository Decorator
+
+There is a `MessageRepositoryDecorator` in `io.pinect.azeron.server.decorator` to help you decorate your message repositories.
+
+#### MapCacheMessageRepositoryDecorator
+
+This decorator, adds a caching layer around your repository. This cache can be simply a `Java Concurrent Hash Map` in single node environment.
+This decorator accepts size of cache for maximum number of messages held in the map. Also the priority of removing messages from cache is with older messages. Specially those that are older than certain amount of seconds you provide in constructor.
+
+This behaviour can not be used when you use `@Service("messageRepository")` on your repository.
+
+Example:
+
+    @Configuration
+    public class AzeronConfiguration {
+        private final MessageRepository myAzeronServerMessageRepository; //main message repository that uses DB and Disk
+        private MapCacheMessageRepositoryDecorator mapCacheMessageRepositoryDecorator;
+    
+        @Autowired
+        public AzeronConfiguration(MessageRepository myAzeronServerMessageRepository) {
+            this.myAzeronServerMessageRepository = myAzeronServerMessageRepository;
+        }
+    
+        @Bean
+        public MessageRepository messageRepository(){
+            mapCacheMessageRepositoryDecorator = new MapCacheMessageRepositoryDecorator(myAzeronServerMessageRepository, new ConcurrentHashMap<>(), 1000, 20);
+            return mapCacheMessageRepositoryDecorator;
+        }
+    
+        // Flushes cache into main repository
+        @PreDestroy
+        public void destroy(){
+            mapCacheMessageRepositoryDecorator.flush();
+        }
+    
+    }
