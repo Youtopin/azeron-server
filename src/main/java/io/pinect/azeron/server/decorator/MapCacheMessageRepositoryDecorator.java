@@ -4,10 +4,7 @@ import io.pinect.azeron.server.domain.entity.MessageEntity;
 import io.pinect.azeron.server.domain.repository.MessageRepository;
 import lombok.extern.log4j.Log4j2;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Log4j2
 public class MapCacheMessageRepositoryDecorator extends MessageRepositoryDecorator {
@@ -108,20 +105,43 @@ public class MapCacheMessageRepositoryDecorator extends MessageRepositoryDecorat
     }
 
     private void commitCacheIfNeeded() {
-        if(cacheMap.size() > maximumCacheSize){
-            long time = new Date().getTime();
-            int i = secondsToConsiderUnAck * 1000;
-            cacheMap.forEach((s, messageEntity) -> {
-                if(time - messageEntity.getDate().getTime() > i){
-                    try {
-                        messageRepository.addMessage(messageEntity);
-                    }catch (Exception e){
-                        log.error("Failed to save message to main repository.", e);
-                    }finally {
-                        cacheMap.remove(s);
-                    }
-                }
-            });
+        long time = new Date().getTime();
+        int i = secondsToConsiderUnAck * 1000;
+
+        int stage = 1;
+
+        while (cacheMap.size() > maximumCacheSize - 10){
+            switch (stage){
+                case 1:
+                    cacheMap.forEach((s, messageEntity) -> {
+                        if(time - messageEntity.getDate().getTime() > i){
+                            commitMessage(messageEntity);
+                        }
+                    });
+
+                    stage++;
+                    break;
+                case 2:
+                    List<MessageEntity> messageEntities = getSortedMessages(cacheMap);
+                    messageEntities.stream().skip(0).limit(cacheMap.size() - maximumCacheSize + 20).forEach(this::commitMessage);
+            }
+
+        }
+    }
+
+    private List<MessageEntity> getSortedMessages(Map<String, MessageEntity> cacheMap) {
+        ArrayList<MessageEntity> sortedEntities = new ArrayList<>(cacheMap.values());
+        Collections.sort(sortedEntities);
+        return sortedEntities;
+    }
+
+    private void commitMessage(MessageEntity messageEntity){
+        try {
+            messageRepository.addMessage(messageEntity);
+        }catch (Exception e){
+            log.error("Failed to save message to main repository.", e);
+        }finally {
+            cacheMap.remove(messageEntity.getMessageId());
         }
     }
 

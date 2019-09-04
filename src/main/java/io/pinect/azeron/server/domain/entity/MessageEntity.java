@@ -15,7 +15,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class MessageEntity implements Serializable {
+public class MessageEntity implements Serializable, Comparable<MessageEntity>{
     private String channel;
     private String messageId;
     private String message;
@@ -49,5 +49,12 @@ public class MessageEntity implements Serializable {
     public int hashCode() {
 
         return Objects.hash(channel, messageId);
+    }
+
+    @Override
+    public int compareTo(MessageEntity o) {
+        if (getDate() == null || o.getDate() == null)
+            return 0;
+        return getDate().compareTo(o.getDate());
     }
 }
