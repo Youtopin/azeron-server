@@ -25,7 +25,7 @@ public class AzeronNatsConnecionStateListener implements NatsConnectionStateList
 
     @Override
     public void onConnectionStateChange(Nats nats, State state) {
-        log.info("Nats state changed from "+ this.state + " to fucking "+ state);
+        log.info("Nats state changed from "+ this.state + " to "+ state);
 
         switch (state){
             case CONNECTED:
