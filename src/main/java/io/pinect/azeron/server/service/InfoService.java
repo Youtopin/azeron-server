@@ -1,5 +1,6 @@
 package io.pinect.azeron.server.service;
 
+import io.pinect.azeron.server.domain.dto.ResponseStatus;
 import io.pinect.azeron.server.domain.dto.out.InfoPublishDto;
 import io.pinect.azeron.server.domain.dto.out.InfoResultDto;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,9 @@ public class InfoService {
             infoResults.add(infoResult);
         });
 
-        return InfoResultDto.builder().results(infoResults).build();
+        InfoResultDto infoResultDto = InfoResultDto.builder().results(infoResults).build();
+        infoResultDto.setStatus(ResponseStatus.OK);
+        return infoResultDto;
     }
 
     private InfoResultDto.InfoResult getInfoResult(InfoPublishDto infoPublishDto) {
