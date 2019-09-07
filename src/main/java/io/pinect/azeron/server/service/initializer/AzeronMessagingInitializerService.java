@@ -44,7 +44,7 @@ public class AzeronMessagingInitializerService implements MessagingInitializerSe
     private Nats nats;
 
     @Autowired
-    public AzeronMessagingInitializerService(AzeronFetchMessagePublisher azeronFetchMessagePublisher, AzeronInfoMessagePublisher azeronInfoMessagePublisher, AzeronNetworkMessageMessageHandler azeronNetworkMessageMessageHandler, SubscribeMessageHandler subscribeMessageHandler, UnSubscribeMessageHandler unsubscribeMessageHandler, AzeronSeenMessageHandler azeronSeenMessageHandler, AzeronQueryMessageHandler azeronQueryMessageHandler, AzeronServerProperties azeronServerProperties, AzeronServerNatsProperties azeronServerNatsProperties, AzeronServerInfo azeronServerInfo, InfoService infoService, TaskScheduler azeronTaskScheduler, ScheduledFuture<?> fetchChannelSchedule) {
+    public AzeronMessagingInitializerService(AzeronFetchMessagePublisher azeronFetchMessagePublisher, AzeronInfoMessagePublisher azeronInfoMessagePublisher, AzeronNetworkMessageMessageHandler azeronNetworkMessageMessageHandler, SubscribeMessageHandler subscribeMessageHandler, UnSubscribeMessageHandler unsubscribeMessageHandler, AzeronSeenMessageHandler azeronSeenMessageHandler, AzeronQueryMessageHandler azeronQueryMessageHandler, AzeronServerProperties azeronServerProperties, AzeronServerNatsProperties azeronServerNatsProperties, AzeronServerInfo azeronServerInfo, InfoService infoService, TaskScheduler azeronTaskScheduler) {
         this.azeronFetchMessagePublisher = azeronFetchMessagePublisher;
         this.azeronInfoMessagePublisher = azeronInfoMessagePublisher;
         this.azeronNetworkMessageMessageHandler = azeronNetworkMessageMessageHandler;
@@ -57,7 +57,6 @@ public class AzeronMessagingInitializerService implements MessagingInitializerSe
         this.azeronServerInfo = azeronServerInfo;
         this.infoService = infoService;
         this.azeronTaskScheduler = azeronTaskScheduler;
-        this.fetchChannelSchedule = fetchChannelSchedule;
     }
 
     @Override
