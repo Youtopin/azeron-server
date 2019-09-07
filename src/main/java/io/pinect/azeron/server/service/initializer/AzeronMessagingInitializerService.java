@@ -1,6 +1,10 @@
 package io.pinect.azeron.server.service.initializer;
 
+import io.pinect.azeron.server.config.properties.AzeronServerNatsProperties;
 import io.pinect.azeron.server.config.properties.AzeronServerProperties;
+import io.pinect.azeron.server.domain.dto.out.InfoPublishDto;
+import io.pinect.azeron.server.domain.model.AzeronServerInfo;
+import io.pinect.azeron.server.service.InfoService;
 import io.pinect.azeron.server.service.handler.*;
 import io.pinect.azeron.server.service.publisher.AzeronFetchMessagePublisher;
 import io.pinect.azeron.server.service.publisher.AzeronInfoMessagePublisher;
@@ -30,6 +34,9 @@ public class AzeronMessagingInitializerService implements MessagingInitializerSe
     private final AzeronSeenMessageHandler azeronSeenMessageHandler;
     private final AzeronQueryMessageHandler azeronQueryMessageHandler;
     private final AzeronServerProperties azeronServerProperties;
+    private final AzeronServerNatsProperties azeronServerNatsProperties;
+    private final AzeronServerInfo azeronServerInfo;
+    private final InfoService infoService;
     private final TaskScheduler azeronTaskScheduler;
     private ScheduledFuture<?> fetchInfoSchedule;
     private ScheduledFuture<?> fetchChannelSchedule;
@@ -37,7 +44,7 @@ public class AzeronMessagingInitializerService implements MessagingInitializerSe
     private Nats nats;
 
     @Autowired
-    public AzeronMessagingInitializerService(AzeronFetchMessagePublisher azeronFetchMessagePublisher, AzeronInfoMessagePublisher azeronInfoMessagePublisher, AzeronNetworkMessageMessageHandler azeronNetworkMessageMessageHandler, SubscribeMessageHandler subscribeMessageHandler, UnSubscribeMessageHandler unsubscribeMessageHandler, AzeronSeenMessageHandler azeronSeenMessageHandler, AzeronQueryMessageHandler azeronQueryMessageHandler, AzeronServerProperties azeronServerProperties, TaskScheduler azeronTaskScheduler) {
+    public AzeronMessagingInitializerService(AzeronFetchMessagePublisher azeronFetchMessagePublisher, AzeronInfoMessagePublisher azeronInfoMessagePublisher, AzeronNetworkMessageMessageHandler azeronNetworkMessageMessageHandler, SubscribeMessageHandler subscribeMessageHandler, UnSubscribeMessageHandler unsubscribeMessageHandler, AzeronSeenMessageHandler azeronSeenMessageHandler, AzeronQueryMessageHandler azeronQueryMessageHandler, AzeronServerProperties azeronServerProperties, AzeronServerNatsProperties azeronServerNatsProperties, AzeronServerInfo azeronServerInfo, InfoService infoService, TaskScheduler azeronTaskScheduler, ScheduledFuture<?> fetchChannelSchedule) {
         this.azeronFetchMessagePublisher = azeronFetchMessagePublisher;
         this.azeronInfoMessagePublisher = azeronInfoMessagePublisher;
         this.azeronNetworkMessageMessageHandler = azeronNetworkMessageMessageHandler;
@@ -46,7 +53,11 @@ public class AzeronMessagingInitializerService implements MessagingInitializerSe
         this.azeronSeenMessageHandler = azeronSeenMessageHandler;
         this.azeronQueryMessageHandler = azeronQueryMessageHandler;
         this.azeronServerProperties = azeronServerProperties;
+        this.azeronServerNatsProperties = azeronServerNatsProperties;
+        this.azeronServerInfo = azeronServerInfo;
+        this.infoService = infoService;
         this.azeronTaskScheduler = azeronTaskScheduler;
+        this.fetchChannelSchedule = fetchChannelSchedule;
     }
 
     @Override
@@ -59,6 +70,13 @@ public class AzeronMessagingInitializerService implements MessagingInitializerSe
         fetchQueryHandler();
         fetchInfoSync();
         fetchChannelSync();
+        updateInformationService();
+    }
+
+    private void updateInformationService() {
+        InfoPublishDto infoPublishDto = InfoPublishDto.builder().nats(azeronServerNatsProperties).channelsCount(-1).build();
+        infoPublishDto.setServerUUID(azeronServerInfo.getId());
+        infoService.addInfo(infoPublishDto);
     }
 
     private void cancelPreviousSubs() {
