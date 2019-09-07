@@ -3,10 +3,7 @@ package io.pinect.azeron.server.service.tracker;
 import io.pinect.azeron.server.domain.model.ClientConfig;
 import lombok.extern.log4j.Log4j2;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -18,7 +15,7 @@ public class InMemoryClientTracker implements ClientTracker {
 
     @Override
     public boolean addClient(String channelName, ClientConfig clientConfig) {
-        List<ClientConfig> clientConfigs = channelToClientConfigsMap.putIfAbsent(channelName, Collections.singletonList(clientConfig));
+        List<ClientConfig> clientConfigs = channelToClientConfigsMap.putIfAbsent(channelName, Arrays.asList(clientConfig));
         boolean added = true;
         if(clientConfigs != null){
             if(clientConfigs.contains(clientConfig))
