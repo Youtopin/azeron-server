@@ -1,5 +1,6 @@
 package io.pinect.azeron.server.config;
 
+import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.pinect.azeron.server.AtomicNatsHolder;
 import io.pinect.azeron.server.config.properties.AzeronServerNatsProperties;
@@ -62,7 +63,11 @@ public class AzeronServerConfiguration {
         natsConnector.idleTimeout(azeronServerNatsProperties.getIdleTimeOut());
         natsConnector.pedantic(azeronServerNatsProperties.isPedanic());
         natsConnector.reconnectWaitTime(5 , TimeUnit.SECONDS);
-        natsConnector.eventLoopGroup(new NioEventLoopGroup(500));
+        if(azeronServerNatsProperties.isUseEpoll()){
+            natsConnector.eventLoopGroup(new EpollEventLoopGroup(500));
+        }else{
+            natsConnector.eventLoopGroup(new NioEventLoopGroup(500));
+        }
         natsConnector.calllbackExecutor(new ScheduledThreadPoolExecutor(50));
         Nats nats = natsConnector.connect();
         return new AtomicNatsHolder(nats);
