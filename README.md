@@ -22,7 +22,7 @@ If following list matches your needs, then you might want to consider using Azer
 - A very fast message delivery when all instances are up
 - Your messages are only text based, and mostly not too large
 - Ability to handle message persistence on any database you prefer (but also bing able to choose between different persisting strategies (in next releases))
-- You don't care about chance of loosing some of your messages (fixable through the configuration you choose, also it will be fixed in next releases)
+- 98% message delivery is enough for you. (Will be closer to 100% is next version)
 
 
 While message delivery in azeron is fast (check nats [benchmarks](https://bravenewgeek.com/dissecting-message-queues/)) by using nats, It might have drawbacks such as having higher load of messages on nats, as it is used for connection persistence and message recovery too. To be more clear, Azeron uses nats connection in order to handle things such as PING, ACKNOWLEDGES and RECOVERY.
