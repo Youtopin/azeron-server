@@ -21,7 +21,7 @@ If following list matches your needs, then you might want to consider using Azer
 - Using a lightweight and configurable messaging system
 - A very fast message delivery when all instances are up
 - Your messages are only text based, and mostly not too large
-- Ability to handle message persistence on any database you prefer (but also bing able to choose between different persisting strategies (in next releases))
+- Ability to handle message persistence on any database you prefer (but also bing able to choose between different persisting strategies (Look at [this](https://github.com/sepehr-gh/azeron-server#mapcachemessagerepositorydecorator) for example)
 - 98% message delivery is enough for you. (Will be closer to 100% is next version)
 
 
