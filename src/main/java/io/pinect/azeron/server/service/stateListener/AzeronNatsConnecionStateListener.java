@@ -24,14 +24,11 @@ public class AzeronNatsConnecionStateListener implements NatsConnectionStateList
     }
 
     @Override
-    public void onConnectionStateChange(Nats nats, State state) {
+    public synchronized void onConnectionStateChange(Nats nats, State state) {
         log.info("Nats state changed from "+ this.state + " to "+ state);
 
-        switch (state){
-            case CONNECTED:
-                if(this.state.equals(State.DISCONNECTED))
-                    messagingInitializerService.init(nats);
-                break;
+        if(this.state != state && (state == State.SERVER_READY || state == State.CONNECTED)){
+            messagingInitializerService.init(nats);
         }
 
         this.state = state;
