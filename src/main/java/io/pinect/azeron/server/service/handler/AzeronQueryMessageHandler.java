@@ -43,6 +43,7 @@ public class AzeronQueryMessageHandler implements MessageHandler {
         if(!message.isRequest())
             return;
         try {
+            log.trace("UnSeen Query [RAW]-> "+ message.getBody());
             UnseenQueryDto unseenQueryDto = objectMapper.readValue(message.getBody(), UnseenQueryDto.class);
             log.trace("UnSeen Query -> "+ unseenQueryDto.toString());
             MessageRepository.MessageResult messageResult = messageRepository.getUnseenMessagesOfService(unseenQueryDto.getServiceName(), 0, azeronServerProperties.getUnseenQueryLimit(), new Date(unseenQueryDto.getDateBefore()));
