@@ -55,7 +55,7 @@ public class AzeronQueryMessageHandler implements MessageHandler {
 
             unseenResponseDto.setStatus(ResponseStatus.OK);
             String value = objectMapper.writeValueAsString(unseenResponseDto);
-            log.trace("UnSeen Response -> "+ value);
+            log.trace("UnSeen Response for service `"+ unseenQueryDto.getServiceName() +"` -> "+ value);
             message.reply(value);
         } catch (IOException e) {
             log.error(e);
