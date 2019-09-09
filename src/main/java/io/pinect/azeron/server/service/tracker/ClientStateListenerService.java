@@ -31,7 +31,7 @@ public class ClientStateListenerService implements ClientTracker.ClientStateList
     }
 
     @Override
-    public void onCreate(ClientTracker clientTracker, String channelName, ClientConfig clientConfig) {
+    public synchronized void onCreate(ClientTracker clientTracker, String channelName, ClientConfig clientConfig) {
         log.trace("New subscription for channel "+ channelName + " -> " + clientConfig);
 
         channelToSubscriptionMap.putIfAbsent(channelName, getNats().subscribe(

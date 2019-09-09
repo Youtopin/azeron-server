@@ -8,6 +8,7 @@ import io.pinect.azeron.server.service.InfoService;
 import io.pinect.azeron.server.service.handler.*;
 import io.pinect.azeron.server.service.publisher.AzeronFetchMessagePublisher;
 import io.pinect.azeron.server.service.publisher.AzeronInfoMessagePublisher;
+import io.pinect.azeron.server.service.tracker.ClientTracker;
 import lombok.extern.log4j.Log4j2;
 import nats.client.Nats;
 import nats.client.Subscription;
@@ -37,6 +38,7 @@ public class AzeronMessagingInitializerService implements MessagingInitializerSe
     private final AzeronServerNatsProperties azeronServerNatsProperties;
     private final AzeronServerInfo azeronServerInfo;
     private final InfoService infoService;
+    private final ClientTracker clientTracker;
     private final TaskScheduler azeronTaskScheduler;
     private ScheduledFuture<?> fetchInfoSchedule;
     private ScheduledFuture<?> fetchChannelSchedule;
@@ -44,7 +46,7 @@ public class AzeronMessagingInitializerService implements MessagingInitializerSe
     private Nats nats;
 
     @Autowired
-    public AzeronMessagingInitializerService(AzeronFetchMessagePublisher azeronFetchMessagePublisher, AzeronInfoMessagePublisher azeronInfoMessagePublisher, AzeronNetworkMessageMessageHandler azeronNetworkMessageMessageHandler, SubscribeMessageHandler subscribeMessageHandler, UnSubscribeMessageHandler unsubscribeMessageHandler, AzeronSeenMessageHandler azeronSeenMessageHandler, AzeronQueryMessageHandler azeronQueryMessageHandler, AzeronServerProperties azeronServerProperties, AzeronServerNatsProperties azeronServerNatsProperties, AzeronServerInfo azeronServerInfo, InfoService infoService, TaskScheduler azeronTaskScheduler) {
+    public AzeronMessagingInitializerService(AzeronFetchMessagePublisher azeronFetchMessagePublisher, AzeronInfoMessagePublisher azeronInfoMessagePublisher, AzeronNetworkMessageMessageHandler azeronNetworkMessageMessageHandler, SubscribeMessageHandler subscribeMessageHandler, UnSubscribeMessageHandler unsubscribeMessageHandler, AzeronSeenMessageHandler azeronSeenMessageHandler, AzeronQueryMessageHandler azeronQueryMessageHandler, AzeronServerProperties azeronServerProperties, AzeronServerNatsProperties azeronServerNatsProperties, AzeronServerInfo azeronServerInfo, InfoService infoService, ClientTracker clientTracker, TaskScheduler azeronTaskScheduler) {
         this.azeronFetchMessagePublisher = azeronFetchMessagePublisher;
         this.azeronInfoMessagePublisher = azeronInfoMessagePublisher;
         this.azeronNetworkMessageMessageHandler = azeronNetworkMessageMessageHandler;
@@ -56,6 +58,7 @@ public class AzeronMessagingInitializerService implements MessagingInitializerSe
         this.azeronServerNatsProperties = azeronServerNatsProperties;
         this.azeronServerInfo = azeronServerInfo;
         this.infoService = infoService;
+        this.clientTracker = clientTracker;
         this.azeronTaskScheduler = azeronTaskScheduler;
     }
 
@@ -64,12 +67,22 @@ public class AzeronMessagingInitializerService implements MessagingInitializerSe
         log.trace("(re)initializing Azeron Server");
         cancelPreviousSubs();
         setNats(nats);
+        reFetchOldSubscriptions();
         fetchNetworkSubscription();
         fetchSubscriptions();
         fetchQueryHandler();
         fetchInfoSync();
         fetchChannelSync();
         updateInformationService();
+    }
+
+    private void reFetchOldSubscriptions() {
+        clientTracker.getChannelToClientConfigsMap().forEach((channelName, clientConfigs) -> {
+            clientConfigs.forEach(clientConfig -> {
+                clientTracker.removeClient(clientConfig.getServiceName());
+                clientTracker.addClient(channelName, clientConfig);
+            });
+        });
     }
 
     private void updateInformationService() {

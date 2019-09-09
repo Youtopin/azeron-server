@@ -16,7 +16,7 @@ public class InMemoryClientTracker implements ClientTracker {
     private final Map<String, List<String>> serviceToChannelsMap = new ConcurrentHashMap<>();
 
     @Override
-    public boolean addClient(String channelName, ClientConfig clientConfig) {
+    public synchronized boolean addClient(String channelName, ClientConfig clientConfig) {
         List<ClientConfig> clientConfigs = channelToClientConfigsMap.putIfAbsent(channelName, getClientConfigList(clientConfig));
         boolean added = true;
         if(clientConfigs != null){
@@ -132,6 +132,7 @@ public class InMemoryClientTracker implements ClientTracker {
     public Map<String, List<ClientConfig>> getChannelToClientConfigsMap() {
         return channelToClientConfigsMap;
     }
+
 
     @Override
     public void flush() {
