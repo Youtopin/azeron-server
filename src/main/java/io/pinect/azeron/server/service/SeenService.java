@@ -24,7 +24,7 @@ public class SeenService {
     }
 
     public SeenResponseDto seen(SeenDto seenDto){
-        log.info("Seen received -> "+ seenDto.toString());
+        log.trace("Seen received -> "+ seenDto.toString());
         if(seenDto.getMessageId() != null) {
             messageRepository.seenMessage(seenDto.getMessageId(), seenDto.getServiceName());
             removeMessageIdNeeded(seenDto.getMessageId());
