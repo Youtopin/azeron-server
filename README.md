@@ -44,7 +44,7 @@ use azeron in your maven POM dependencies
 	<dependency>
 		<groupId>io.pinect</groupId>
 		<artifactId>azeron-server</artifactId>
-		<version>1.0-SNAPSHOT</version>
+		<version>1.0.18-SNAPSHOT</version>
 	</dependency>
 
 
@@ -92,7 +92,12 @@ nats hosts (array) to connect to
 
 	azeron.server.nats.hosts=nats://localhost:4222
 
-**NOTE**: Azeron does not automatically install NATS on your system or embedd it.
+**NOTE**: Azeron does not automatically install NATS on your system and does not embed it.
+
+## Distribution
+
+As long as all Azeron instances are connected to same single nats node or cluster, they can identify each other and balance message handlings.
+
 
 ## API
 
