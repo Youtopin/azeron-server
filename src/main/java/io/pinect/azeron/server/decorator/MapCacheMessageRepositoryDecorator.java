@@ -5,6 +5,7 @@ import io.pinect.azeron.server.domain.repository.MessageRepository;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Log4j2
 public class MapCacheMessageRepositoryDecorator extends MessageRepositoryDecorator {
@@ -18,7 +19,6 @@ public class MapCacheMessageRepositoryDecorator extends MessageRepositoryDecorat
         this.maximumCacheSize = maximumCacheSize;
         this.secondsToConsiderUnAck = secondsToConsiderUnAck;
     }
-
 
     @Override
     public MessageEntity addMessage(MessageEntity messageEntity) {
@@ -34,11 +34,59 @@ public class MapCacheMessageRepositoryDecorator extends MessageRepositoryDecorat
     public void seenMessage(String messageId, String serviceName) {
         MessageEntity messageEntity = cacheMap.get(messageId);
         if(messageEntity != null){
+            if(messageEntity.getSeenSubscribers().contains(serviceName)){
+                return;
+            }
             messageEntity.getSeenSubscribers().add(serviceName);
             messageEntity.increaseSeenCount();
+            if(messageEntity.getSeenCount() == messageEntity.getSeenNeeded()){
+                removeMessage(messageId);
+            }
         }else{
+            makeTemporaryCache(messageId, serviceName);
+            readFromDiskToCache(messageId);
             messageRepository.seenMessage(messageId, serviceName);
         }
+    }
+
+    private void makeTemporaryCache(String messageId, String serviceName) {
+        MessageEntity messageEntity = new MessageEntity();
+        messageEntity.setSeenSubscribers(getSet(serviceName));
+        messageEntity.setSeenCount(1);
+        messageEntity.setMessageId(messageId);
+        messageEntity.setDate(new Date());
+        messageEntity.setDirty(true);
+        cacheMap.put(messageId, messageEntity);
+    }
+
+    public void readFromDiskToCache(String messageId){
+        MessageEntity message = messageRepository.getMessage(messageId);
+        List<String> newSubscribers = new ArrayList<>();
+        if(message != null){
+            MessageEntity cached = cacheMap.get(messageId);
+            Set<String> subscribers = message.getSubscribers();
+            AtomicInteger seenCount = new AtomicInteger(message.getSeenCount());
+            cached.getSubscribers().forEach(subscriber -> {
+                if (!subscribers.contains(subscriber)) {
+                    subscribers.add(subscriber);
+                    newSubscribers.add(subscriber);
+                    seenCount.getAndIncrement();
+                }
+            });
+            message.setSubscribers(subscribers);
+            message.setSeenCount(seenCount.get());
+            cacheMap.put(messageId, message);
+        }
+
+        newSubscribers.forEach(s -> {
+            messageRepository.seenMessage(messageId, s);
+        });
+    }
+
+    private Set<String> getSet(String s){
+        Set<String> set = new HashSet<String>();
+        set.add(s);
+        return set;
     }
 
     @Override
@@ -68,8 +116,8 @@ public class MapCacheMessageRepositoryDecorator extends MessageRepositoryDecorat
                     results.add(messageEntity);
                 }
             }
-
-            if(++matched == limit){
+            matched++;
+            if(matched == limit){
                 hasMore = true;
                 break;
             }
@@ -87,7 +135,7 @@ public class MapCacheMessageRepositoryDecorator extends MessageRepositoryDecorat
             }
             unseenMessagesOfService.setMessages(messages);
         }else {
-            unseenMessagesOfService = new MessageResult(results, true);
+            unseenMessagesOfService = new MessageResult(results, results.size() == limit);
         }
 
         return unseenMessagesOfService;
@@ -105,6 +153,8 @@ public class MapCacheMessageRepositoryDecorator extends MessageRepositoryDecorat
     }
 
     private void commitCacheIfNeeded() {
+        removeDirties();
+
         long time = new Date().getTime();
         int i = secondsToConsiderUnAck * 1000;
 
@@ -124,9 +174,20 @@ public class MapCacheMessageRepositoryDecorator extends MessageRepositoryDecorat
                 case 2:
                     List<MessageEntity> messageEntities = getSortedMessages(cacheMap);
                     messageEntities.stream().skip(0).limit(cacheMap.size() - maximumCacheSize + 20).forEach(this::commitMessage);
+                    stage = 1;
+                    break;
             }
 
         }
+    }
+
+    private void removeDirties() {
+        long time = new Date().getTime();
+        cacheMap.forEach((key, messageEntity) -> {
+            if(messageEntity.isDirty() && time - messageEntity.getDate().getTime() > 20000){
+                cacheMap.remove(key);
+            }
+        });
     }
 
     private List<MessageEntity> getSortedMessages(Map<String, MessageEntity> cacheMap) {
@@ -146,6 +207,9 @@ public class MapCacheMessageRepositoryDecorator extends MessageRepositoryDecorat
     }
 
     private void addToCache(MessageEntity messageEntity) {
-        cacheMap.putIfAbsent(messageEntity.getMessageId(), messageEntity);
+        MessageEntity alreadyCachedMessage = cacheMap.putIfAbsent(messageEntity.getMessageId(), messageEntity);
+        if(alreadyCachedMessage != null){
+            alreadyCachedMessage.setDirty(false);
+        }
     }
 }

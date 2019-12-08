@@ -22,6 +22,7 @@ public class SeenDto {
     @NotNull
     private String serviceName;
     private String reqId;
+    private String channelName;
 
     @JsonIgnore
     @AssertTrue

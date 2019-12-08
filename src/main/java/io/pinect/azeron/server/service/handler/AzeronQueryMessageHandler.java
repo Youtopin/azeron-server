@@ -21,8 +21,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
+/**
+ * Handles un-seen query
+ */
 @Component
 @Log4j2
 public class AzeronQueryMessageHandler implements MessageHandler {
@@ -56,7 +58,7 @@ public class AzeronQueryMessageHandler implements MessageHandler {
 
             unseenResponseDto.setStatus(ResponseStatus.OK);
             String value = objectMapper.writeValueAsString(unseenResponseDto);
-            log.trace("UnSeen Response for service `"+ unseenQueryDto.getServiceName() +"` -> "+ value);
+            log.trace("UnSeen Response for service `"+ unseenQueryDto.getServiceName() +"` contains  "+ unseenResponseDto.getMessages().size() + " messages.");
             message.reply(value);
         } catch (IOException e) {
             log.error(e);

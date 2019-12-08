@@ -3,11 +3,10 @@ package io.pinect.azeron.server.domain.entity;
 import lombok.*;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 @Getter
 @Setter
@@ -20,13 +19,15 @@ public class MessageEntity implements Serializable, Comparable<MessageEntity>{
     private String messageId;
     private String message;
     private String sender;
-    private List<String> subscribers = new CopyOnWriteArrayList<>();
+    private Set<String> subscribers = new CopyOnWriteArraySet<>();
     @Builder.Default
-    private List<String> seenSubscribers = new CopyOnWriteArrayList<>();
+    private Set<String> seenSubscribers = new CopyOnWriteArraySet<>();
     private int seenNeeded = 0;
     private int seenCount = 0;
     private Date date = new Date();
     private boolean completed;
+    private boolean isDirty;
+
 
     public boolean isFullyAcknowledged(){
         return seenCount == seenNeeded || seenSubscribers.size() == subscribers.size();

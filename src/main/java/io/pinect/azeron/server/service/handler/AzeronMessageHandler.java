@@ -11,6 +11,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
+import java.util.HashSet;
 import java.util.List;
 
 @Log4j2
@@ -33,7 +34,6 @@ public class AzeronMessageHandler extends AbstractMessageHandler {
     public void onMessage(Message message) {
         super.onMessage(message);
         MessageDto messageDto = toMessageConverter.convert(message.getBody());
-        assert messageDto != null;
         validateMessage(message, messageDto);
         List<String> servicesOfChannel = clientTracker.getServicesOfChannel(message.getSubject());
         processMessage(messageDto, servicesOfChannel);
@@ -42,12 +42,13 @@ public class AzeronMessageHandler extends AbstractMessageHandler {
     private void processMessage(MessageDto messageDto, List<String> servicesOfChannel) {
         MessageEntity messageEntity = toMessageEntityConverter.convert(messageDto);
         assert messageEntity != null;
-        messageEntity.setSubscribers(servicesOfChannel);
+        messageEntity.setSubscribers(new HashSet<>(servicesOfChannel));
         messageEntity.setSeenNeeded(servicesOfChannel.size());
         messageRepository.addMessage(messageEntity);
     }
 
     private void validateMessage(Message message, MessageDto messageDto) {
+        Assert.notNull(messageDto, "MessageDto can not be null after converting");
         if(messageDto.getChannelName() != null && !message.getSubject().equals(messageDto.getChannelName()))
             log.warn("Message model channel name '"+ messageDto.getChannelName() + "' does not match nats subject "+ message.getSubject());
         Assert.notNull(messageDto.getObject(), "Message Object can not be null");

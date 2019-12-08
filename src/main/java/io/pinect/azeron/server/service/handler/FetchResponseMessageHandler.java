@@ -11,6 +11,10 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+
+/**
+ * Handles response for fetch requests in azeron network. This shall fetch clients from other Azeron instances
+ */
 @Component
 @Log4j2
 public class FetchResponseMessageHandler extends AbstractMessageHandler {

@@ -65,6 +65,7 @@ public class AzeronMessagingInitializerService implements MessagingInitializerSe
     @Override
     public synchronized void init(Nats nats) {
         log.trace("(re)initializing Azeron Server");
+        updateInformationService();
         cancelPreviousSubs();
         setNats(nats);
         reFetchOldSubscriptions();
@@ -73,7 +74,6 @@ public class AzeronMessagingInitializerService implements MessagingInitializerSe
         fetchQueryHandler();
         fetchInfoSync();
         fetchChannelSync();
-        updateInformationService();
     }
 
     private void reFetchOldSubscriptions() {
@@ -86,14 +86,15 @@ public class AzeronMessagingInitializerService implements MessagingInitializerSe
     }
 
     private void updateInformationService() {
-        InfoPublishDto infoPublishDto = InfoPublishDto.builder().nats(azeronServerNatsProperties).channelsCount(-1).build();
+        InfoPublishDto infoPublishDto = InfoPublishDto.builder().nats(azeronServerNatsProperties).channelsCount(0).build();
         infoPublishDto.setServerUUID(azeronServerInfo.getId());
         infoService.addInfo(infoPublishDto);
     }
 
     private void cancelPreviousSubs() {
-        log.trace("Closing previous subscriptions");
+        log.trace("Closing all previous subscriptions");
         subscriptionList.forEach(Subscription::close);
+        subscriptionList.clear();
     }
 
     private void fetchQueryHandler() {

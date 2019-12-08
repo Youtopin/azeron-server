@@ -7,7 +7,6 @@ import lombok.extern.log4j.Log4j2;
 import nats.client.Nats;
 import nats.client.Subscription;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,27 +33,28 @@ public class ClientStateListenerService implements ClientTracker.ClientStateList
     public synchronized void onCreate(ClientTracker clientTracker, String channelName, ClientConfig clientConfig) {
         log.trace("New subscription for channel "+ channelName + " -> " + clientConfig);
 
-        channelToSubscriptionMap.putIfAbsent(channelName, getNats().subscribe(
-                channelName,
-                azeronMessageHandler
-        ));
+        if (!channelToSubscriptionMap.containsKey(channelName)) {
+            channelToSubscriptionMap.put(channelName, getNats().subscribe(
+                    channelName,
+                    azeronMessageHandler
+            ));
+        }
+
     }
 
     @Override
     public void onDelete(ClientTracker clientTracker, String serviceName, String channelName) {
-        log.trace("Un-subscribing "+ serviceName +" from channel "+ channelName);
-
         List<String> servicesOfChannel = clientTracker.getServicesOfChannel(channelName);
-        if(servicesOfChannel.size() != 0)
+        if(servicesOfChannel.size() != 0) {
             return;
+        }
+        log.trace("Un-subscribing "+ serviceName +" from channel "+ channelName);
         Subscription subscription = channelToSubscriptionMap.remove(channelName);
         subscription.close();
     }
 
     @Override
     public void onDelete(ClientTracker clientTracker, String serviceName, List<String> channelNames) {
-        log.trace("Un-subscribing "+ serviceName +" from channels "+ channelNames);
-
         for(String channelName: channelNames){
             onDelete(clientTracker, serviceName, channelName);
         }
