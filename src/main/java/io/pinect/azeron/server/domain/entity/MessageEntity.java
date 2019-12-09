@@ -13,7 +13,6 @@ import java.util.concurrent.CopyOnWriteArraySet;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class MessageEntity implements Serializable, Comparable<MessageEntity>{
     private String channel;
     private String messageId;
@@ -26,8 +25,8 @@ public class MessageEntity implements Serializable, Comparable<MessageEntity>{
     private int seenCount = 0;
     private Date date = new Date();
     private boolean completed;
-    private boolean isDirty;
-
+    private boolean dirty;
+    private boolean locked = false;
 
     public boolean isFullyAcknowledged(){
         return seenCount == seenNeeded || seenSubscribers.size() == subscribers.size();
@@ -57,5 +56,22 @@ public class MessageEntity implements Serializable, Comparable<MessageEntity>{
         if (getDate() == null || o.getDate() == null)
             return 0;
         return getDate().compareTo(o.getDate());
+    }
+
+    @Override
+    public String toString() {
+        return "MessageEntity{" +
+                "channel='" + channel + '\'' +
+                ", messageId='" + messageId + '\'' +
+                ", message='" + message + '\'' +
+                ", sender='" + sender + '\'' +
+                ", subscribers=" + subscribers +
+                ", seenSubscribers=" + seenSubscribers +
+                ", seenNeeded=" + seenNeeded +
+                ", seenCount=" + seenCount +
+                ", date=" + date +
+                ", completed=" + completed +
+                ", dirty=" + dirty +
+                '}';
     }
 }

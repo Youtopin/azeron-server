@@ -24,16 +24,17 @@ public class MapCacheMessageRepositoryDecorator extends MessageRepositoryDecorat
     public MessageEntity addMessage(MessageEntity messageEntity) {
         log.debug("Adding message from decorator -> " + messageEntity.toString());
 
-        addToCache(messageEntity);
+        MessageEntity result = addToCache(messageEntity);
         commitCacheIfNeeded();
 
-        return messageEntity;
+        return result;
     }
 
     @Override
     public void seenMessage(String messageId, String serviceName) {
         MessageEntity messageEntity = cacheMap.get(messageId);
         if(messageEntity != null){
+            messageEntity.setLocked(true);
             if(messageEntity.getSeenSubscribers().contains(serviceName)){
                 return;
             }
@@ -42,10 +43,10 @@ public class MapCacheMessageRepositoryDecorator extends MessageRepositoryDecorat
             if(messageEntity.getSeenCount() == messageEntity.getSeenNeeded()){
                 removeMessage(messageId);
             }
+            messageEntity.setLocked(false);
         }else{
             makeTemporaryCache(messageId, serviceName);
             readFromDiskToCache(messageId);
-            messageRepository.seenMessage(messageId, serviceName);
         }
     }
 
@@ -76,11 +77,11 @@ public class MapCacheMessageRepositoryDecorator extends MessageRepositoryDecorat
             message.setSubscribers(subscribers);
             message.setSeenCount(seenCount.get());
             cacheMap.put(messageId, message);
-        }
 
-        newSubscribers.forEach(s -> {
-            messageRepository.seenMessage(messageId, s);
-        });
+            newSubscribers.forEach(s -> {
+                messageRepository.seenMessage(messageId, s);
+            });
+        }
     }
 
     private Set<String> getSet(String s){
@@ -112,7 +113,7 @@ public class MapCacheMessageRepositoryDecorator extends MessageRepositoryDecorat
         for(String key: cacheMap.keySet()){
             MessageEntity messageEntity = cacheMap.get(key);
             if(messageEntity != null){
-                if(messageEntity.getSubscribers().contains(serviceName) && messageEntity.getDate().before(before)){
+                if(messageEntity.getSubscribers().contains(serviceName) && !messageEntity.getSeenSubscribers().contains(serviceName) && messageEntity.getDate().before(before)){
                     results.add(messageEntity);
                 }
             }
@@ -130,14 +131,11 @@ public class MapCacheMessageRepositoryDecorator extends MessageRepositoryDecorat
             List<MessageEntity> messages = unseenMessagesOfService.getMessages();
             for(MessageEntity messageEntity: results){
                 if(!results.contains(messageEntity)){
-                    messages.add(messageEntity);
+                    results.add(messageEntity);
                 }
             }
-            unseenMessagesOfService.setMessages(messages);
-        }else {
-            unseenMessagesOfService = new MessageResult(results, results.size() == limit);
         }
-
+        unseenMessagesOfService = new MessageResult(results, results.size() == limit);
         return unseenMessagesOfService;
     }
 
@@ -161,10 +159,11 @@ public class MapCacheMessageRepositoryDecorator extends MessageRepositoryDecorat
         int stage = 1;
 
         while (cacheMap.size() > maximumCacheSize - 10){
+            log.debug("Committing cache");
             switch (stage){
                 case 1:
                     cacheMap.forEach((s, messageEntity) -> {
-                        if(time - messageEntity.getDate().getTime() > i){
+                        if(!messageEntity.isLocked() && time - messageEntity.getDate().getTime() > i){
                             commitMessage(messageEntity);
                         }
                     });
@@ -206,10 +205,17 @@ public class MapCacheMessageRepositoryDecorator extends MessageRepositoryDecorat
         }
     }
 
-    private void addToCache(MessageEntity messageEntity) {
+    private MessageEntity addToCache(MessageEntity messageEntity) {
         MessageEntity alreadyCachedMessage = cacheMap.putIfAbsent(messageEntity.getMessageId(), messageEntity);
         if(alreadyCachedMessage != null){
+            log.debug("Message already exists in cache. Adding details ...");
             alreadyCachedMessage.setDirty(false);
+            alreadyCachedMessage.setDate(messageEntity.getDate());
+            alreadyCachedMessage.setChannel(messageEntity.getChannel());
+            alreadyCachedMessage.setSeenNeeded(messageEntity.getSeenNeeded());
+            alreadyCachedMessage.setSender(messageEntity.getSender());
+            alreadyCachedMessage.setSubscribers(messageEntity.getSubscribers());
         }
+        return alreadyCachedMessage != null ? alreadyCachedMessage : messageEntity;
     }
 }
