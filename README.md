@@ -5,7 +5,7 @@ The scalable and reliable event messaging library, Wraps nats.io and uses Java S
 
 Azeron is simple event messaging library that wraps [nats.io](https://nats.io/) java connector and handles event messaging for you. Currently azeron is only available as Spring module.
 
-**The advantage** of using Azeron client-server instead of nats is that Azeron handles message recovery for you. Nats is a `FIRE AND FORGET` system. But Azeron does its best to not to forget any message ever! Although nats already supports `streaming` or can turn itself to a `fire and know` system ([look here](https://nats-io.github.io/docs/developer/concepts/acks.html)) but it still forgets after a timeout or when client disconnects from nats server. Meanwhile, with nats streaming, we are loosing latency for message delivery.
+**The advantage** of using Azeron client-server instead of nats is that Azeron handles message recovery for you. Nats is a `FIRE AND FORGET` system. But Azeron does its best to not to forget any message ever! Although nats already supports `streaming` or can turn itself to a `fire and know` system ([look here](https://nats-io.github.io/docs/developer/concepts/acks.html)) but it uses a timeout to keep messages in RAM until they are delivered. Meanwhile, with nats streaming, we are loosing latency for message delivery.
 
 Azeron Server can act as a big (possibly clustered) listener to all the channels clients are subscribing to using nats (Azeron Client). It persists all the messages so acknowledges are performed between Azeron server and client (not client to client). Clients can later query un-acknowledge messages from Azeron Server (which happens automatically in azeron environment).
 Also Azeron can keep listening to events for a service while they are down and provide them their un-acknowledge messages when they are up and running.
@@ -19,13 +19,13 @@ For example, the repository layer of Azeron server is abstract. You can implemen
 If following list matches your needs, then you might want to consider using Azeron.
 
 - Using a lightweight and configurable messaging system
-- A very fast message delivery when all instances are up
+- A very fast message delivery when all instances are up (Thanks to Nats.io)
 - Your messages are only text based, and mostly not too large
-- Ability to handle message persistence on any database you prefer (but also bing able to choose between different persisting strategies (Look at [this](https://github.com/sepehr-gh/azeron-server#mapcachemessagerepositorydecorator) for example)
+- **Most important one:** Ability to handle message persistence on any database you prefer (but also bing able to choose between different persisting strategies (Look at [this](https://github.com/sepehr-gh/azeron-server#mapcachemessagerepositorydecorator) for example)
 - 98% message delivery is enough for you. (Will be closer to 100% is next version)
 
 
-While message delivery in azeron is fast (check nats [benchmarks](https://bravenewgeek.com/dissecting-message-queues/)) by using nats, It might have drawbacks such as having higher load of messages on nats, as it is used for connection persistence and message recovery too. To be more clear, Azeron uses nats connection in order to handle things such as PING, ACKNOWLEDGES and RECOVERY.
+While message delivery in azeron is fast by using nats (check nats [benchmarks](https://bravenewgeek.com/dissecting-message-queues/)), It might have drawbacks such as having higher load of messages on nats, as nats connection is also used for azeron network messages. To be more clear, Azeron uses nats connection in order to handle things such as PING, ACKNOWLEDGES and RECOVERY.
 
 ## Installation
 
