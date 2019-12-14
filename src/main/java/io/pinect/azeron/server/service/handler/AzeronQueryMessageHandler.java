@@ -13,6 +13,7 @@ import io.pinect.azeron.server.domain.repository.MessageRepository;
 import lombok.extern.log4j.Log4j2;
 import nats.client.Message;
 import nats.client.MessageHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
@@ -33,6 +34,7 @@ public class AzeronQueryMessageHandler implements MessageHandler {
     private final Converter<Collection<MessageEntity>, List<MessageDto>> entityToMessageDtoListConverter;
     private final ObjectMapper objectMapper;
 
+    @Autowired
     public AzeronQueryMessageHandler(MessageRepository messageRepository, AzeronServerProperties azeronServerProperties, Converter<Collection<MessageEntity>, List<MessageDto>> entityToMessageDtoListConverter, ObjectMapper objectMapper) {
         this.messageRepository = messageRepository;
         this.azeronServerProperties = azeronServerProperties;
@@ -50,13 +52,13 @@ public class AzeronQueryMessageHandler implements MessageHandler {
             log.trace("UnSeen Query -> "+ unseenQueryDto.toString());
             MessageRepository.MessageResult messageResult = messageRepository.getUnseenMessagesOfService(unseenQueryDto.getServiceName(), 0, azeronServerProperties.getUnseenQueryLimit(), new Date(unseenQueryDto.getDateBefore()));
             List<MessageDto> messageDtos = entityToMessageDtoListConverter.convert(messageResult.getMessages());
-            UnseenResponseDto unseenResponseDto = UnseenResponseDto.builder()
-                    .hasMore(messageResult.isHasMore())
-                    .count(messageDtos != null ? messageDtos.size() : 0)
-                    .messages(messageDtos != null ? messageDtos : new ArrayList<>())
-                    .build();
-
+            log.trace("Message Dto Size after converting -> "+ messageDtos.size());
+            UnseenResponseDto unseenResponseDto = new UnseenResponseDto();
             unseenResponseDto.setStatus(ResponseStatus.OK);
+            unseenResponseDto.setCount(messageDtos.size());
+            unseenResponseDto.setHasMore(messageResult.isHasMore());
+            unseenResponseDto.setMessages(messageDtos);
+
             String value = objectMapper.writeValueAsString(unseenResponseDto);
             log.trace("UnSeen Response for service `"+ unseenQueryDto.getServiceName() +"` contains  "+ unseenResponseDto.getMessages().size() + " messages.");
             message.reply(value);
