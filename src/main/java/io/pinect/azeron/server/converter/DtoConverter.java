@@ -47,9 +47,12 @@ public class DtoConverter {
             @Override
             public List<MessageDto> convert(Collection<MessageEntity> messageEntities) {
                 List<MessageDto> messageDtos = new ArrayList<>();
-                messageEntities.forEach(messageEntity -> {
+                for (MessageEntity messageEntity : messageEntities) {
                     messageDtos.add(toMessageDto().convert(messageEntity));
-                });
+                }
+                /*messageEntities.forEach(messageEntity -> {
+                    messageDtos.add(toMessageDto().convert(messageEntity));
+                });*/
                 return messageDtos;
             }
         };
