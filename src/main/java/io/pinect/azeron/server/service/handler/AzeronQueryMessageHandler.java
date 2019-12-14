@@ -51,6 +51,7 @@ public class AzeronQueryMessageHandler implements MessageHandler {
             UnseenQueryDto unseenQueryDto = objectMapper.readValue(message.getBody(), UnseenQueryDto.class);
             log.trace("UnSeen Query -> "+ unseenQueryDto.toString());
             MessageRepository.MessageResult messageResult = messageRepository.getUnseenMessagesOfService(unseenQueryDto.getServiceName(), 0, azeronServerProperties.getUnseenQueryLimit(), new Date(unseenQueryDto.getDateBefore()));
+            log.trace("Message Dto Size after converting -> "+ messageResult.getMessages().size());
             List<MessageDto> messageDtos = entityToMessageDtoListConverter.convert(messageResult.getMessages());
             log.trace("Message Dto Size after converting -> "+ messageDtos.size());
             UnseenResponseDto unseenResponseDto = new UnseenResponseDto();

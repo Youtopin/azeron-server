@@ -129,7 +129,7 @@ public class MapCacheMessageRepositoryDecorator extends MessageRepositoryDecorat
         if(!hasMore){
             unseenMessagesOfService = messageRepository.getUnseenMessagesOfService(serviceName, offset, limit - results.size(), before);
             List<MessageEntity> messages = unseenMessagesOfService.getMessages();
-            for(MessageEntity messageEntity: results){
+            for(MessageEntity messageEntity: messages){
                 if(!results.contains(messageEntity)){
                     results.add(messageEntity);
                 }
