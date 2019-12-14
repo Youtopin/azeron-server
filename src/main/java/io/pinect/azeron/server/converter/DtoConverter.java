@@ -48,6 +48,7 @@ public class DtoConverter {
             public List<MessageDto> convert(Collection<MessageEntity> messageEntities) {
                 List<MessageDto> messageDtos = new ArrayList<>();
                 for (MessageEntity messageEntity : messageEntities) {
+                    log.debug("Converting message "+ messageEntity.getMessageId() + " to add to message dto list");
                     messageDtos.add(toMessageDto().convert(messageEntity));
                     log.debug("Added message "+ messageEntity.getMessageId() + " to message dto list");
                 }
