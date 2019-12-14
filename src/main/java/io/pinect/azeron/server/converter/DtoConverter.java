@@ -73,7 +73,7 @@ public class DtoConverter {
                             .timeStamp(messageEntity.getDate().getTime())
                             .build();
                 } catch (IOException e) {
-                    log.error(e);
+                    log.catching(e);
                     return null;
                 }
             }
