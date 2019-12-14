@@ -3,6 +3,7 @@ package io.pinect.azeron.server.controller;
 import io.pinect.azeron.server.config.properties.AzeronServerNatsProperties;
 import io.pinect.azeron.server.domain.dto.ResponseStatus;
 import io.pinect.azeron.server.domain.dto.in.SeenDto;
+import io.pinect.azeron.server.domain.dto.out.ClientInfoDto;
 import io.pinect.azeron.server.domain.dto.out.InfoResultDto;
 import io.pinect.azeron.server.domain.dto.out.PongDto;
 import io.pinect.azeron.server.domain.dto.out.SeenResponseDto;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -33,6 +35,20 @@ public class ApiController {
         this.clientTracker = clientTracker;
         this.infoService = infoService;
     }
+
+    @GetMapping("/listeners")
+    public @ResponseBody
+    ClientInfoDto.ListenersDto getListeners(){
+        List<ClientInfoDto> clientInfoDtos = new ArrayList<>();
+        clientTracker.getChannelToClientConfigsMap().forEach((channel, clientConfigs) -> {
+            clientConfigs.forEach(clientConfig -> {
+                clientInfoDtos.add(ClientInfoDto.builder().channel(channel).serviceName(clientConfig.getServiceName()).build());
+            });
+        });
+
+        return new ClientInfoDto.ListenersDto(clientInfoDtos, null);
+    }
+
 
     @GetMapping("/info")
     public @ResponseBody
