@@ -1,3 +1,5 @@
+[![](https://jitpack.io/v/sepehr-gh/azeron-server.svg)](https://jitpack.io/#sepehr-gh/azeron-server)
+
 # Azeron-Server
 The scalable and reliable event messaging library, Wraps nats.io and uses Java Spring framework.
 
