@@ -62,7 +62,7 @@ public class AzeronSeenMessageHandler implements MessageHandler {
                 message.reply(objectMapper.writeValueAsString(seenResponseDto));
             log.trace("sent seen response for reqId: "+ seenDto.getReqId());
         } catch (JsonProcessingException e) {
-            log.error(e);
+            log.catching(e);
         }
     }
 
@@ -72,7 +72,7 @@ public class AzeronSeenMessageHandler implements MessageHandler {
         try {
             return objectMapper.readValue(body, SeenDto.class);
         } catch (IOException e) {
-            log.error(e);
+            log.catching(e);
             throw new RuntimeException("Failed to cast message body to seen DTO",e);
         }
     }

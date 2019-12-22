@@ -36,7 +36,7 @@ public class AzeronFetchMessagePublisher {
             json = objectMapper.writeValueAsString(azeronFetchRequestDto);
             nats.request(ChannelName.AZERON_MAIN_CHANNEL_NAME, json, 10, TimeUnit.SECONDS, fetchResponseMessageHandler);
         } catch (JsonProcessingException e) {
-            log.error(e);
+            log.catching(e);
         }
     }
 }

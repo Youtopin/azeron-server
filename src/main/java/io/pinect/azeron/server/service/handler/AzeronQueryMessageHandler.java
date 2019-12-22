@@ -64,7 +64,7 @@ public class AzeronQueryMessageHandler implements MessageHandler {
             log.trace("UnSeen Response for service `"+ unseenQueryDto.getServiceName() +"` contains  "+ unseenResponseDto.getMessages().size() + " messages.");
             message.reply(value);
         } catch (IOException e) {
-            log.error(e);
+            log.catching(e);
             try {
                 message.reply(objectMapper.writeValueAsString(new BasicAzeronReponseDto(ResponseStatus.FAILED)));
             } catch (JsonProcessingException ignored) {}

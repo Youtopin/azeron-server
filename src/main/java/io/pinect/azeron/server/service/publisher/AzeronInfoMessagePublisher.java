@@ -35,7 +35,7 @@ public class AzeronInfoMessagePublisher {
             String value = objectMapper.writeValueAsString(infoPublishDto);
             nats.publish(ChannelName.AZERON_MAIN_CHANNEL_NAME, value);
         }catch (Exception e){
-            log.error(e);
+            log.catching(e);
         }
     }
 
