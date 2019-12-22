@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class BasicAzeronReponseDto {
-    private ResponseStatus status;
+    private ResponseStatus status = ResponseStatus.OK;
 }
