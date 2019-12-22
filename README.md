@@ -31,9 +31,31 @@ While message delivery in azeron is fast by using nats (check nats [benchmarks](
 
 ## Installation
 
-There is no builds available at maven centrals at the moment. The simplest strategy is to add azeron to your local maven repository.
 
-Clone from source
+### Maven
+
+Add jitpack repository to your repositories:
+
+	<repositories>
+		<repository>
+		    <id>jitpack.io</id>
+		    <url>https://jitpack.io</url>
+		</repository>
+	</repositories>
+
+Add azeron dependency:
+
+	<dependency>
+	    <groupId>com.github.sepehr-gh</groupId>
+	    <artifactId>azeron-server</artifactId>
+	    <version>1.1.6-SNAPSHOT</version>
+	</dependency>
+
+### Gradle, sbt, leiningen
+
+Check [Jitpack](https://jitpack.io/#sepehr-gh/azeron-server)
+
+### Clone from source
 
 	git clone https://github.com/sepehr-gh/azeron-server.git
 
@@ -46,7 +68,7 @@ use azeron in your maven POM dependencies
 	<dependency>
 		<groupId>io.pinect</groupId>
 		<artifactId>azeron-server</artifactId>
-		<version>1.0.18-SNAPSHOT</version>
+		<version>1.1.6-SNAPSHOT</version>
 	</dependency>
 
 
