@@ -47,6 +47,7 @@ public class MapCacheMessageRepositoryDecorator extends MessageRepositoryDecorat
         }else{
             makeTemporaryCache(messageId, serviceName);
             readFromDiskToCache(messageId);
+            messageRepository.seenMessage(messageId, serviceName);
         }
     }
 

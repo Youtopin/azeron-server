@@ -26,7 +26,7 @@ public class MessageEntity implements Serializable, Comparable<MessageEntity>{
     private Date date = new Date();
     private boolean completed;
     private boolean dirty;
-    private boolean locked = false;
+    private volatile boolean locked = false;
 
     public boolean isFullyAcknowledged(){
         return seenCount == seenNeeded || seenSubscribers.size() == subscribers.size();
