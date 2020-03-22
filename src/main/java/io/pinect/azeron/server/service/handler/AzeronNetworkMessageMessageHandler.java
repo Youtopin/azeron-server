@@ -25,16 +25,14 @@ public class AzeronNetworkMessageMessageHandler extends AbstractMessageHandler {
     private final ObjectMapper objectMapper;
     private final FetchService fetchService;
     private final InfoService infoService;
-    private final AzeronServerInfo azeronServerInfo;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     @Autowired
-    public AzeronNetworkMessageMessageHandler(ObjectMapper objectMapper, FetchService fetchService, InfoService infoService, AzeronServerInfo azeronServerInfo) {
+    public AzeronNetworkMessageMessageHandler(ObjectMapper objectMapper, FetchService fetchService, InfoService infoService) {
         this.objectMapper = objectMapper;
         this.fetchService = fetchService;
         this.infoService = infoService;
-        this.azeronServerInfo = azeronServerInfo;
     }
 
     @Override

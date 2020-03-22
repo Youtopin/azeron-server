@@ -32,10 +32,11 @@ public class AzeronSeenMessageHandler implements MessageHandler {
 
     @Override
     public void onMessage(Message message) {
+        if(!message.isRequest())
+            return;
+
         SeenDto seenDto = getSeenDto(message.getBody());
-
-        boolean exit = false;
-
+        boolean exit = false; // if at the end exit is true, it means azeron does not even listen to such channel of this service. So there is no pass anything to repository.
         if(seenDto.getChannelName() != null){
             boolean b = false;
             for (ClientConfig clientConfig : clientTracker.getClientsOfChannel(seenDto.getChannelName())) {
@@ -44,9 +45,7 @@ public class AzeronSeenMessageHandler implements MessageHandler {
                     break;
                 }
             }
-
             exit = !b;
-
         }
 
         SeenResponseDto seenResponseDto = new SeenResponseDto();
@@ -58,8 +57,7 @@ public class AzeronSeenMessageHandler implements MessageHandler {
         }
 
         try {
-            if(message.isRequest())
-                message.reply(objectMapper.writeValueAsString(seenResponseDto));
+            message.reply(objectMapper.writeValueAsString(seenResponseDto));
             log.trace("sent seen response for reqId: "+ seenDto.getReqId());
         } catch (JsonProcessingException e) {
             log.catching(e);

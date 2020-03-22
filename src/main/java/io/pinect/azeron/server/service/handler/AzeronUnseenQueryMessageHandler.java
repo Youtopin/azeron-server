@@ -28,14 +28,14 @@ import java.util.List;
  */
 @Component
 @Log4j2
-public class AzeronQueryMessageHandler implements MessageHandler {
+public class AzeronUnseenQueryMessageHandler implements MessageHandler {
     private final MessageRepository messageRepository;
     private final AzeronServerProperties azeronServerProperties;
     private final Converter<Collection<MessageEntity>, List<MessageDto>> entityToMessageDtoListConverter;
     private final ObjectMapper objectMapper;
 
     @Autowired
-    public AzeronQueryMessageHandler(MessageRepository messageRepository, AzeronServerProperties azeronServerProperties, Converter<Collection<MessageEntity>, List<MessageDto>> entityToMessageDtoListConverter, ObjectMapper objectMapper) {
+    public AzeronUnseenQueryMessageHandler(MessageRepository messageRepository, AzeronServerProperties azeronServerProperties, Converter<Collection<MessageEntity>, List<MessageDto>> entityToMessageDtoListConverter, ObjectMapper objectMapper) {
         this.messageRepository = messageRepository;
         this.azeronServerProperties = azeronServerProperties;
         this.entityToMessageDtoListConverter = entityToMessageDtoListConverter;

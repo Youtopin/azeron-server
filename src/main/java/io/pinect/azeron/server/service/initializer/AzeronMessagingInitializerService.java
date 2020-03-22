@@ -33,7 +33,7 @@ public class AzeronMessagingInitializerService implements MessagingInitializerSe
     private final SubscribeMessageHandler subscribeMessageHandler;
     private final UnSubscribeMessageHandler unsubscribeMessageHandler;
     private final AzeronSeenMessageHandler azeronSeenMessageHandler;
-    private final AzeronQueryMessageHandler azeronQueryMessageHandler;
+    private final AzeronUnseenQueryMessageHandler azeronUnseenQueryMessageHandler;
     private final AzeronServerProperties azeronServerProperties;
     private final AzeronServerNatsProperties azeronServerNatsProperties;
     private final AzeronServerInfo azeronServerInfo;
@@ -46,14 +46,14 @@ public class AzeronMessagingInitializerService implements MessagingInitializerSe
     private Nats nats;
 
     @Autowired
-    public AzeronMessagingInitializerService(AzeronFetchMessagePublisher azeronFetchMessagePublisher, AzeronInfoMessagePublisher azeronInfoMessagePublisher, AzeronNetworkMessageMessageHandler azeronNetworkMessageMessageHandler, SubscribeMessageHandler subscribeMessageHandler, UnSubscribeMessageHandler unsubscribeMessageHandler, AzeronSeenMessageHandler azeronSeenMessageHandler, AzeronQueryMessageHandler azeronQueryMessageHandler, AzeronServerProperties azeronServerProperties, AzeronServerNatsProperties azeronServerNatsProperties, AzeronServerInfo azeronServerInfo, InfoService infoService, ClientTracker clientTracker, TaskScheduler azeronTaskScheduler) {
+    public AzeronMessagingInitializerService(AzeronFetchMessagePublisher azeronFetchMessagePublisher, AzeronInfoMessagePublisher azeronInfoMessagePublisher, AzeronNetworkMessageMessageHandler azeronNetworkMessageMessageHandler, SubscribeMessageHandler subscribeMessageHandler, UnSubscribeMessageHandler unsubscribeMessageHandler, AzeronSeenMessageHandler azeronSeenMessageHandler, AzeronUnseenQueryMessageHandler azeronUnseenQueryMessageHandler, AzeronServerProperties azeronServerProperties, AzeronServerNatsProperties azeronServerNatsProperties, AzeronServerInfo azeronServerInfo, InfoService infoService, ClientTracker clientTracker, TaskScheduler azeronTaskScheduler) {
         this.azeronFetchMessagePublisher = azeronFetchMessagePublisher;
         this.azeronInfoMessagePublisher = azeronInfoMessagePublisher;
         this.azeronNetworkMessageMessageHandler = azeronNetworkMessageMessageHandler;
         this.subscribeMessageHandler = subscribeMessageHandler;
         this.unsubscribeMessageHandler = unsubscribeMessageHandler;
         this.azeronSeenMessageHandler = azeronSeenMessageHandler;
-        this.azeronQueryMessageHandler = azeronQueryMessageHandler;
+        this.azeronUnseenQueryMessageHandler = azeronUnseenQueryMessageHandler;
         this.azeronServerProperties = azeronServerProperties;
         this.azeronServerNatsProperties = azeronServerNatsProperties;
         this.azeronServerInfo = azeronServerInfo;
@@ -99,7 +99,7 @@ public class AzeronMessagingInitializerService implements MessagingInitializerSe
 
     private void fetchQueryHandler() {
         log.trace("Fetching query handler");
-        Subscription subscribe = nats.subscribe(AZERON_QUERY_CHANNEL_NAME, azeronServerProperties.getQueueName(), azeronQueryMessageHandler);
+        Subscription subscribe = nats.subscribe(AZERON_QUERY_CHANNEL_NAME, azeronServerProperties.getQueueName(), azeronUnseenQueryMessageHandler);
         subscriptionList.add(subscribe);
     }
 
