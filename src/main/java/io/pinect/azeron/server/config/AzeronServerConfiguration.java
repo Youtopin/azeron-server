@@ -39,14 +39,12 @@ public class AzeronServerConfiguration {
     private final AzeronServerNatsProperties azeronServerNatsProperties;
     private final ApplicationContext applicationContext;
     private final NatsConnectionStateListener natsConnectionStateListener;
-    private final ClientStateListenerService clientStateListenerService;
 
     @Autowired
     public AzeronServerConfiguration(AzeronServerNatsProperties azeronServerNatsProperties, ApplicationContext applicationContext, @Lazy NatsConnectionStateListener natsConnectionStateListener, @Lazy ClientStateListenerService clientStateListenerService) {
         this.azeronServerNatsProperties = azeronServerNatsProperties;
         this.applicationContext = applicationContext;
         this.natsConnectionStateListener = natsConnectionStateListener;
-        this.clientStateListenerService = clientStateListenerService;
     }
 
     @Bean
@@ -85,10 +83,9 @@ public class AzeronServerConfiguration {
     }
 
     @Bean("clientTracker")
+    @ConditionalOnMissingBean(value = ClientTracker.class)
     public ClientTracker clientTracker(){
-        InMemoryClientTracker inMemoryClientTracker = new InMemoryClientTracker();
-        inMemoryClientTracker.addListener(clientStateListenerService);
-        return inMemoryClientTracker;
+        return new InMemoryClientTracker();
     }
 
     @Bean("azeronTaskScheduler")
