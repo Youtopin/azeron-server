@@ -54,7 +54,7 @@ Add azeron dependency:
 	<dependency>
 	    <groupId>com.github.sepehr-gh</groupId>
 	    <artifactId>azeron-server</artifactId>
-	    <version>1.1.9-SNAPSHOT</version>
+	    <version>1.2.0-SNAPSHOT</version>
 	</dependency>
 
 ### Gradle, sbt, leiningen
@@ -74,7 +74,7 @@ use azeron in your maven POM dependencies
 	<dependency>
 		<groupId>io.pinect</groupId>
 		<artifactId>azeron-server</artifactId>
-		<version>1.1.6-SNAPSHOT</version>
+		<version>1.2.0-SNAPSHOT</version>
 	</dependency>
 
 
